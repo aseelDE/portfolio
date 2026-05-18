@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aseel Alzahrani · Data Pipeline Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#0EA5E9;--blue-d:#0284C7;--blue-l:#E0F2FE;--blue-ll:#F0F9FF;
+  --teal:#10B981;--teal-d:#059669;--teal-l:#D1FAE5;
+  --indigo:#6366F1;--indigo-l:#EEF2FF;
+  --amber:#F59E0B;
+  --g50:#F8FAFC;--g100:#F1F5F9;--g200:#E2E8F0;--g300:#CBD5E1;
+  --g400:#94A3B8;--g500:#64748B;--g600:#475569;--g700:#334155;--g800:#1E293B;--g900:#0F172A;
+  --mono:'JetBrains Mono',monospace;
+  --sans:'DM Sans',sans-serif;
+  --bar-h:80px;
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--sans);background:#FAFCFF;color:var(--g800);display:flex;flex-direction:column}
+
+/* ══════════════════════════
+   PIPELINE BAR
+══════════════════════════ */
+#pipeline-bar{
+  flex-shrink:0;
+  background:white;
+  border-bottom:1px solid var(--g200);
+  padding:0 1.25rem;
+  height:var(--bar-h);
+  display:flex;
+  align-items:center;
+  gap:0;
+  overflow:hidden;
+}
+.pipe-logo{
+  font-family:var(--mono);font-size:.7rem;font-weight:700;color:var(--g900);
+  white-space:nowrap;margin-right:1rem;display:flex;flex-direction:column;gap:4px;flex-shrink:0;
+}
+.pipe-logo-top{display:flex;align-items:center;gap:6px}
+.pipe-logo-dot{width:8px;height:8px;border-radius:50%;background:var(--teal);animation:pdot 2s ease-in-out infinite}
+@keyframes pdot{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.4)}50%{box-shadow:0 0 0 5px rgba(16,185,129,0)}}
+.pipe-logo-sub{font-size:.56rem;color:var(--g400);letter-spacing:.03em}
+
+.pipe-track{display:flex;align-items:center;flex:1;min-width:0;gap:0;height:100%;overflow:hidden}
+
+.pipe-conn{
+  flex-shrink:1;width:20px;min-width:8px;height:2px;
+  background:var(--g200);position:relative;overflow:hidden;
+}
+.pipe-conn-flow{position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,var(--blue),transparent);animation:pflow 1.5s linear infinite}
+.pipe-conn.done .pipe-conn-flow{background:linear-gradient(90deg,transparent,var(--teal),transparent)}
+@keyframes pflow{to{left:100%}}
+
+.pipe-node{
+  flex:1;min-width:0;
+  display:flex;flex-direction:column;align-items:flex-start;gap:3px;
+  padding:8px 10px;border-radius:9px;cursor:pointer;transition:all .2s;
+  border:1.5px solid var(--g200);background:var(--g50);
+  position:relative;overflow:hidden;
+}
+.pipe-node::before{content:'';position:absolute;top:0;left:0;right:0;height:2.5px;background:var(--g200);transition:background .2s}
+.pipe-node:hover{border-color:var(--blue);background:var(--blue-ll);transform:translateY(-2px);box-shadow:0 4px 14px rgba(14,165,233,.12)}
+.pipe-node:hover::before{background:var(--blue)}
+.pipe-node.active{border-color:var(--blue);background:var(--blue-ll);box-shadow:0 4px 16px rgba(14,165,233,.15)}
+.pipe-node.active::before{background:var(--blue)}
+.pipe-node.visited{border-color:rgba(16,185,129,.35);background:rgba(240,253,250,.6)}
+.pipe-node.visited::before{background:var(--teal)}
+.pn-top{display:flex;align-items:center;gap:5px;width:100%;min-width:0}
+.pn-badge{
+  font-family:var(--mono);font-size:.52rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:1px 5px;border-radius:3px;flex-shrink:0;white-space:nowrap;
+  background:var(--g100);color:var(--g400);border:1px solid var(--g200);
+}
+.pipe-node.active .pn-badge{background:var(--blue-l);color:var(--blue-d);border-color:rgba(14,165,233,.3)}
+.pipe-node.visited:not(.active) .pn-badge{background:var(--teal-l);color:var(--teal-d);border-color:rgba(16,185,129,.3)}
+.pn-check{margin-left:auto;width:14px;height:14px;border-radius:50%;background:var(--teal);display:none;align-items:center;justify-content:center;font-size:.5rem;color:white;flex-shrink:0}
+.pipe-node.visited:not(.active) .pn-check{display:flex}
+.pn-name{font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--g700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
+.pipe-node.active .pn-name,.pipe-node:hover .pn-name{color:var(--g900)}
+.pn-file{font-family:var(--mono);font-size:.56rem;color:var(--g300);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
+.pipe-node.active .pn-file{color:var(--blue)}
+.pipe-node.visited:not(.active) .pn-file{color:var(--teal-d);opacity:.7}
+
+/* ══════════════════════════
+   STAGE AREA
+══════════════════════════ */
+#stage{flex:1;overflow:hidden;position:relative}
+.screen{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  padding:1.5rem;opacity:0;pointer-events:none;
+  transform:translateX(40px);overflow-y:auto;
+  z-index:0;visibility:hidden;
+  /* no transition by default — JS manages it per-element */
+}
+.screen.active{opacity:1;pointer-events:all;transform:translateX(0);z-index:2;visibility:visible}
+.screen.exiting{opacity:0;z-index:1;visibility:hidden;pointer-events:none}
+
+/* Stage header */
+.stage-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:.75rem}
+.stage-layer{font-family:var(--mono);font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.stage-layer::before{content:'';width:16px;height:1.5px;background:var(--blue)}
+.stage-title{font-family:var(--mono);font-size:clamp(1.3rem,4vw,2.1rem);font-weight:700;color:var(--g900);letter-spacing:-.02em;line-height:1.1}
+.stage-title span{color:var(--blue)}
+.stage-subtitle{font-size:.85rem;color:var(--g500);margin-top:.3rem;font-weight:300}
+.stage-nav{display:flex;gap:8px;align-items:center;flex-shrink:0;flex-wrap:wrap}
+.nav-btn{font-family:var(--mono);font-size:.68rem;font-weight:600;padding:7px 14px;border-radius:7px;border:none;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.nav-btn-next{background:var(--blue);color:white;box-shadow:0 3px 10px rgba(14,165,233,.3)}
+.nav-btn-next:hover{background:var(--blue-d);transform:translateY(-1px)}
+.nav-btn-back{background:white;color:var(--g600);border:1px solid var(--g200)}
+.nav-btn-back:hover{border-color:var(--g400);color:var(--g800)}
+.nav-btn-finish{background:var(--teal);color:white;box-shadow:0 3px 10px rgba(16,185,129,.3)}
+.nav-btn-finish:hover{background:var(--teal-d);transform:translateY(-1px)}
+
+/* Tags */
+.tags{display:flex;flex-wrap:wrap;gap:4px}
+.tag{font-family:var(--mono);font-size:.63rem;font-weight:500;padding:2px 8px;border-radius:5px;border:1px solid}
+.tag-b{color:#0369A1;background:#EFF6FF;border-color:#BFDBFE}
+.tag-t{color:#0F766E;background:#F0FDFA;border-color:#99F6E4}
+.tag-i{color:#4338CA;background:#EEF2FF;border-color:#C7D2FE}
+.tag-a{color:#B45309;background:#FFFBEB;border-color:#FDE68A}
+.tag-g{color:#374151;background:#F9FAFB;border-color:#E5E7EB}
+.tag-p{color:#6B21A8;background:#FAF5FF;border-color:#E9D5FF}
+
+/* ══════════════════════════
+   HERO ENTRY
+══════════════════════════ */
+.hero-screen{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:1.5rem;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 30%,rgba(14,165,233,.07) 0%,transparent 70%),
+    repeating-linear-gradient(rgba(14,165,233,.04) 0,rgba(14,165,233,.04) 1px,transparent 1px,transparent 40px),
+    repeating-linear-gradient(90deg,rgba(14,165,233,.04) 0,rgba(14,165,233,.04) 1px,transparent 1px,transparent 40px);
+}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.68rem;font-weight:600;color:var(--teal-d);background:var(--teal-l);border:1px solid rgba(16,185,129,.25);padding:4px 12px;border-radius:20px;margin-bottom:.9rem}
+.hero-badge::before{content:'';width:6px;height:6px;background:var(--teal);border-radius:50%}
+.hero-h1{font-family:var(--mono);font-size:clamp(1.6rem,6vw,3.2rem);font-weight:700;color:var(--g900);line-height:1.1;letter-spacing:-.03em;margin-bottom:.5rem}
+.hero-h1 em{color:var(--blue);font-style:normal}
+.hero-sub{font-size:clamp(.8rem,2.5vw,.95rem);color:var(--g500);font-weight:300;max-width:380px;margin:.3rem auto 1.75rem;line-height:1.6}
+
+/* Hero pipeline — responsive */
+.hero-pipeline{
+  display:flex;align-items:stretch;
+  width:100%;max-width:900px;margin:0 auto;
+}
+.hero-node{
+  flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  padding:.9rem .5rem;background:white;border:1.5px solid var(--g200);
+  cursor:pointer;transition:all .22s;position:relative;overflow:hidden;text-align:center;
+}
+.hero-node:first-child{border-radius:12px 0 0 12px}
+.hero-node:last-child{border-radius:0 12px 12px 0}
+.hero-node::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;transition:background .2s}
+.hn0::before{background:var(--teal)}
+.hn1::before,.hn2::before{background:var(--blue)}
+.hn3::before{background:var(--teal)}
+.hn4::before{background:var(--indigo)}
+.hero-node:hover{background:var(--blue-ll);border-color:var(--blue);transform:translateY(-3px);box-shadow:0 6px 20px rgba(14,165,233,.14);z-index:1}
+.hero-node:hover::before{background:var(--blue)}
+.hero-node-badge{font-family:var(--mono);font-size:clamp(.48rem,.9vw,.6rem);font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 6px;border-radius:4px;white-space:nowrap}
+.hn0 .hero-node-badge{background:var(--teal-l);color:var(--teal-d)}
+.hn1 .hero-node-badge,.hn2 .hero-node-badge{background:var(--blue-l);color:var(--blue-d)}
+.hn3 .hero-node-badge{background:var(--teal-l);color:var(--teal-d)}
+.hn4 .hero-node-badge{background:var(--indigo-l);color:var(--indigo)}
+.hero-node:hover .hero-node-badge{background:var(--blue-l);color:var(--blue-d)}
+.hero-node-name{font-family:var(--mono);font-size:clamp(.7rem,1.5vw,.95rem);font-weight:700;color:var(--g900)}
+.hero-node-file{font-family:var(--mono);font-size:clamp(.5rem,1vw,.62rem);color:var(--g300);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.hero-conn{flex-shrink:1;width:20px;min-width:6px;align-self:center;position:relative;height:2px;background:var(--g200);overflow:hidden}
+.hero-conn-dot{position:absolute;top:-3px;left:-7px;width:7px;height:7px;border-radius:50%;background:var(--blue);animation:hcd 1.4s linear infinite}
+@keyframes hcd{0%{left:-7px;opacity:1}90%{opacity:1}100%{left:calc(100% + 7px);opacity:0}}
+
+/* ══════════════════════════
+   ABOUT
+══════════════════════════ */
+.about-layout{display:grid;grid-template-columns:270px 1fr;gap:1.5rem;align-items:start}
+.profile-card{background:white;border:1px solid var(--g200);border-radius:13px;padding:1.4rem;position:relative;overflow:hidden}
+.profile-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--teal),var(--blue))}
+.avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--blue-l),var(--teal-l));display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:1.25rem;font-weight:700;color:var(--blue-d);border:2.5px solid var(--blue-l);margin-bottom:.8rem}
+.profile-name{font-family:var(--mono);font-size:1rem;font-weight:700;color:var(--g900);margin-bottom:.12rem}
+.profile-role{font-size:.8rem;color:var(--blue);font-weight:500;margin-bottom:.6rem}
+.profile-bio{font-size:.8rem;color:var(--g600);line-height:1.75;margin-bottom:1rem}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;border-top:1px solid var(--g100);padding-top:.85rem}
+.stat{text-align:center}
+.stat-n{font-family:var(--mono);font-size:1.25rem;font-weight:700;color:var(--g900)}
+.stat-l{font-size:.58rem;color:var(--g400);text-transform:uppercase;letter-spacing:.07em}
+.log-entry{font-family:var(--mono);font-size:.7rem;color:var(--g600);padding:5px 0;border-bottom:1px solid var(--g100);display:flex;gap:8px;flex-wrap:wrap}
+.log-entry:last-child{border-bottom:none}
+.log-ts{color:var(--teal-d);flex-shrink:0}
+.log-key{color:var(--blue-d);margin-right:3px}
+
+/* ══════════════════════════
+   SKILLS
+══════════════════════════ */
+.gridauto{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.85rem}
+.skill-node{background:white;border:1px solid var(--g200);border-radius:10px;padding:.9rem 1rem;transition:all .25s}
+.skill-node:hover{border-color:var(--blue);box-shadow:0 0 0 3px rgba(14,165,233,.07),0 3px 12px rgba(0,0,0,.07);transform:translateY(-2px)}
+.skill-node-head{display:flex;align-items:center;gap:8px;margin-bottom:.7rem}
+.skill-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+.skill-node-name{font-family:var(--mono);font-size:.75rem;font-weight:700;color:var(--g900)}
+.skill-node-type{font-size:.62rem;color:var(--g400)}
+
+/* ══════════════════════════
+   PROJECTS
+══════════════════════════ */
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+.proj-card{background:white;border:1px solid var(--g200);border-radius:12px;overflow:hidden;transition:all .3s}
+.proj-card:hover{border-color:rgba(14,165,233,.4);box-shadow:0 0 0 3px rgba(14,165,233,.06),0 8px 24px rgba(0,0,0,.09);transform:translateY(-3px)}
+.proj-pipe{display:flex;align-items:center;gap:4px;padding:.8rem .9rem .45rem;font-family:var(--mono);font-size:.6rem;font-weight:600;flex-wrap:wrap;row-gap:4px}
+.pipe-s{padding:2px 7px;border-radius:4px}
+.pipe-a{color:var(--g300);font-size:.65rem}
+.proj-body{padding:.55rem .9rem .9rem}
+.proj-name{font-family:var(--mono);font-size:.84rem;font-weight:700;color:var(--g900);margin-bottom:.25rem}
+.proj-desc{font-size:.78rem;color:var(--g500);line-height:1.6;margin-bottom:.75rem}
+.proj-metrics{display:flex;gap:10px;border-top:1px solid var(--g100);padding-top:.6rem;align-items:flex-end;flex-wrap:wrap}
+.pm{display:flex;flex-direction:column}
+.pm-v{font-family:var(--mono);font-size:.76rem;font-weight:700;color:var(--g900)}
+.pm-l{font-size:.56rem;color:var(--g400);text-transform:uppercase;letter-spacing:.05em}
+.proj-status{font-family:var(--mono);font-size:.58rem;font-weight:600;padding:2px 9px;border-radius:12px;margin-left:auto}
+.s-live{background:#DCFCE7;color:#166534}
+.s-wip{background:#FEF9C3;color:#854D0E}
+.proj-gh{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:.62rem;font-weight:600;color:var(--blue-d);text-decoration:none;padding:3px 9px;border:1px solid var(--blue-l);border-radius:5px;background:var(--blue-ll);transition:all .2s;margin-top:.55rem}
+.proj-gh:hover{background:var(--blue-l);border-color:var(--blue)}
+
+/* ══════════════════════════
+   EXPERIENCE
+══════════════════════════ */
+.exp-layout{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;align-items:start}
+.timeline{position:relative;padding-left:1.6rem}
+.timeline::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:1.5px;background:linear-gradient(to bottom,var(--blue),var(--teal) 70%,var(--g200))}
+.t-item{position:relative;margin-bottom:1.1rem}
+.t-dot{position:absolute;left:-1.97rem;top:.22rem;width:13px;height:13px;border-radius:50%;background:white;border:2px solid var(--blue);display:flex;align-items:center;justify-content:center}
+.t-dot::after{content:'';width:5px;height:5px;border-radius:50%;background:var(--blue)}
+.t-card{background:white;border:1px solid var(--g200);border-radius:10px;padding:.9rem 1.1rem;transition:all .25s}
+.t-card:hover{border-color:rgba(14,165,233,.3);box-shadow:0 3px 12px rgba(0,0,0,.07)}
+.t-head{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:5px;margin-bottom:.18rem}
+.t-title{font-family:var(--mono);font-size:.82rem;font-weight:700;color:var(--g900)}
+.t-company{font-size:.76rem;color:var(--blue);font-weight:500;margin-bottom:.15rem}
+.t-date{font-family:var(--mono);font-size:.6rem;background:var(--g100);color:var(--g500);padding:2px 8px;border-radius:5px;white-space:nowrap}
+.t-desc{font-size:.77rem;color:var(--g500);line-height:1.65}
+.t-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:.55rem}
+.edu-card{background:white;border:1px solid var(--g200);border-radius:12px;padding:1.1rem 1.25rem;position:relative;overflow:hidden}
+.edu-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--indigo),var(--blue))}
+.cert-item{display:flex;align-items:flex-start;gap:7px;padding:5px 0;border-bottom:1px solid var(--g100);font-size:.77rem;color:var(--g600)}
+.cert-item:last-child{border-bottom:none}
+.cert-dot{width:5px;height:5px;border-radius:50%;background:var(--blue);flex-shrink:0;margin-top:5px}
+
+/* ══════════════════════════
+   CONTACT
+══════════════════════════ */
+.contact-wrap{display:flex;align-items:center;justify-content:center;flex:1;padding-top:.5rem}
+.contact-card{background:white;border:1px solid var(--g200);border-radius:18px;padding:2rem;max-width:480px;width:100%;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.08)}
+.contact-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--teal),var(--indigo))}
+.contact-title{font-family:var(--mono);font-size:1.35rem;font-weight:700;color:var(--g900);margin-bottom:.2rem}
+.contact-sub{font-size:.83rem;color:var(--g500);margin-bottom:1.2rem}
+.clinks{display:flex;flex-direction:column;gap:7px}
+.clink{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--g50);border:1px solid var(--g200);border-radius:9px;text-decoration:none;color:var(--g700);font-size:.78rem;transition:all .2s;font-family:var(--mono);word-break:break-all}
+.clink:hover{background:var(--blue-l);border-color:var(--blue);color:var(--blue-d);transform:translateX(4px)}
+.clink-icon{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0}
+
+/* ══════════════════════════
+   STATUS BAR
+══════════════════════════ */
+#status-bar{
+  flex-shrink:0;height:28px;background:var(--g50);border-top:1px solid var(--g200);
+  display:flex;align-items:center;padding:0 1rem;gap:1rem;
+  font-family:var(--mono);font-size:.58rem;color:var(--g400);overflow:hidden;
+}
+.sb-item{display:flex;align-items:center;gap:4px;white-space:nowrap;flex-shrink:0}
+.sb-dot{width:5px;height:5px;border-radius:50%}
+.sb-green{background:var(--teal)}
+.sb-blue{background:var(--blue)}
+.sb-sep{flex:1}
+.sb-hide{display:none}
+
+/* ══════════════════════════
+   RESPONSIVE — TABLET
+══════════════════════════ */
+@media(max-width:900px){
+  :root{--bar-h:72px}
+  .pipe-logo-sub{display:none}
+  .about-layout{grid-template-columns:1fr}
+  .exp-layout{grid-template-columns:1fr}
+  .hero-node-file{display:none}
+}
+
+/* ══════════════════════════
+   RESPONSIVE — MOBILE
+══════════════════════════ */
+@media(max-width:600px){
+  :root{--bar-h:56px}
+  body{overflow:hidden}
+
+  /* Pipeline bar */
+  #pipeline-bar{padding:0 .6rem;gap:0;height:var(--bar-h)}
+  .pipe-logo{margin-right:.5rem}
+  .pipe-logo span:not(.pipe-logo-dot){font-size:.6rem}
+  .pipe-conn{min-width:3px;width:6px;flex-shrink:1}
+
+  /* Nodes: single-line, name only */
+  .pipe-node{
+    padding:0 7px;height:38px;border-radius:7px;gap:1px;
+    justify-content:center;align-items:center;flex-direction:column;
+  }
+  .pn-top{display:none}           /* hide badge row entirely */
+  .pn-file{display:none}          /* hide file path */
+  .pn-name{font-size:.68rem;text-align:center;width:100%}
+
+  /* Show a tiny dot under active node name instead of badge */
+  .pipe-node.active::after{
+    content:'';display:block;width:4px;height:4px;border-radius:50%;
+    background:var(--blue);margin:0 auto;
+  }
+  .pipe-node.visited:not(.active)::after{
+    content:'✓';display:block;font-size:.5rem;color:var(--teal-d);text-align:center;
+    line-height:1;margin-top:1px;
+  }
+
+  /* Screens */
+  .screen{padding:1rem}
+  .stage-header{margin-bottom:1rem}
+  .stage-title{font-size:1.35rem}
+  .stage-subtitle{font-size:.8rem}
+  .stage-nav{gap:6px}
+  .nav-btn{font-size:.65rem;padding:6px 11px}
+
+  /* Hero */
+  .hero-h1{font-size:clamp(1.4rem,7vw,2rem)}
+  .hero-sub{font-size:.78rem}
+
+  /* Hero pipeline: vertical stack */
+  .hero-pipeline{flex-direction:column;gap:0;max-width:320px}
+  .hero-node{flex-direction:row;justify-content:flex-start;align-items:center;gap:8px;padding:.75rem 1rem;border-radius:0;border-bottom:none}
+  .hero-node:first-child{border-radius:10px 10px 0 0}
+  .hero-node:last-child{border-radius:0 0 10px 10px;border-bottom:1.5px solid var(--g200)}
+  .hero-node::before{width:3px;height:100%;top:0;right:auto;bottom:0;border-radius:0}
+  .hero-node-file{display:none}
+  .hero-conn{width:100%;height:1px;min-width:100%}
+  .hero-conn-dot{top:-3px;animation:none}
+
+  /* About */
+  .about-layout{grid-template-columns:1fr;gap:1rem}
+  #screen-1 [style*="grid-template-columns:auto 1fr"]{grid-template-columns:1fr !important}
+  #screen-1 [style*="grid-template-columns:repeat(3,1fr)"]{grid-template-columns:1fr !important}
+
+  /* Skills */
+  .gridauto{grid-template-columns:1fr}
+
+  /* Projects */
+  .projects-grid{grid-template-columns:1fr}
+
+  /* Experience */
+  .exp-layout{grid-template-columns:1fr;gap:1rem}
+
+  /* Status bar */
+  #status-bar{gap:.6rem}
+  .sb-keys{display:none}
+}
+
+@media(max-width:380px){
+  .pipe-logo{display:none}
+  .pipe-node{padding:0 5px}
+  .pn-name{font-size:.6rem}
+}
+</style>
+</head>
+<body>
+
+<!-- PIPELINE BAR -->
+<div id="pipeline-bar">
+  <div class="pipe-logo">
+    <div class="pipe-logo-top">
+      <div class="pipe-logo-dot"></div>
+      <span>aseel.pipeline</span>
+    </div>
+    <div class="pipe-logo-sub">← → to navigate</div>
+  </div>
+  <div class="pipe-track" id="pipe-track"></div>
+</div>
+
+<div id="stage">
+
+  <!-- SCREEN 0: HERO -->
+  <div class="screen" id="screen-0">
+    <div class="hero-badge">data analyst · riyadh, KSA</div>
+    <h1 class="hero-h1">Aseel <em>Alzahrani</em></h1>
+    <p class="hero-sub">Click any stage in the pipeline to explore my portfolio, or use ← → arrow keys.</p>
+
+    <div class="hero-pipeline">
+      <div class="hero-node hn0" onclick="goTo(1)">
+        <span class="hero-node-badge">source</span>
+        <span class="hero-node-name">About</span>
+        <span class="hero-node-file">profile.json</span>
+      </div>
+      <div class="hero-conn"><div class="hero-conn-dot"></div></div>
+      <div class="hero-node hn1" onclick="goTo(2)">
+        <span class="hero-node-badge">ingest</span>
+        <span class="hero-node-name">Skills</span>
+        <span class="hero-node-file">stack.yml</span>
+      </div>
+      <div class="hero-conn"><div class="hero-conn-dot" style="animation-delay:-.35s"></div></div>
+      <div class="hero-node hn2" onclick="goTo(3)">
+        <span class="hero-node-badge">transform</span>
+        <span class="hero-node-name">Projects</span>
+        <span class="hero-node-file">repos/</span>
+      </div>
+      <div class="hero-conn"><div class="hero-conn-dot" style="animation-delay:-.7s"></div></div>
+      <div class="hero-node hn3" onclick="goTo(4)">
+        <span class="hero-node-badge">model</span>
+        <span class="hero-node-name">Experience</span>
+        <span class="hero-node-file">career.sql</span>
+      </div>
+      <div class="hero-conn"><div class="hero-conn-dot" style="animation-delay:-1.05s"></div></div>
+      <div class="hero-node hn4" onclick="goTo(5)">
+        <span class="hero-node-badge">serve</span>
+        <span class="hero-node-name">Contact</span>
+        <span class="hero-node-file">api/connect</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 1: ABOUT -->
+  <div class="screen active" id="screen-1">
+    <div class="stage-header">
+      <div>
+        <div class="stage-layer">source · profile.json</div>
+        <h2 class="stage-title">About <span>Me</span></h2>
+        <p class="stage-subtitle">Who I am, what I do, and how I can add value.</p>
+      </div>
+      <div class="stage-nav">
+        <button class="nav-btn nav-btn-next" onclick="goTo(2)">Skills →</button>
+      </div>
+    </div>
+    <!-- Top: identity card + intro paragraph -->
+    <div style="display:grid;grid-template-columns:auto 1fr;gap:1.5rem;align-items:start;margin-bottom:1.25rem">
+      <!-- Identity card -->
+      <div style="background:white;border:1px solid var(--g200);border-radius:14px;padding:1.4rem 1.6rem;position:relative;overflow:hidden;min-width:220px;max-width:260px">
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--teal),var(--blue))"></div>
+        <div class="avatar">AA</div>
+        <div style="font-family:var(--mono);font-size:1rem;font-weight:700;color:var(--g900);margin-bottom:.15rem">Aseel Alzahrani</div>
+        <div style="font-size:.82rem;color:var(--blue);font-weight:500;margin-bottom:.9rem">Data Analyst</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;align-items:center;gap:7px;font-size:.78rem;color:var(--g600)">
+            <span style="font-size:.85rem">📍</span> Riyadh, Saudi Arabia
+          </div>
+          <div style="display:flex;align-items:center;gap:7px;font-size:.78rem;color:var(--g600)">
+            <span style="font-size:.85rem">🏢</span> Aujan Coca-Cola (ACCBC)
+          </div>
+          <div style="display:flex;align-items:center;gap:7px;font-size:.78rem;color:var(--g600)">
+            <span style="font-size:.85rem">🎓</span> MIS · University of Tabuk
+          </div>
+          <div style="display:flex;align-items:center;gap:7px;font-size:.78rem;color:var(--g600)">
+            <span style="font-size:.85rem">⭐</span> GPA 4.72 / 5.0
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;border-top:1px solid var(--g100);padding-top:.9rem;margin-top:1rem">
+          <div style="text-align:center">
+            <div style="font-family:var(--mono);font-size:1.2rem;font-weight:700;color:var(--g900)">2+</div>
+            <div style="font-size:.58rem;color:var(--g400);text-transform:uppercase;letter-spacing:.06em">Years</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-family:var(--mono);font-size:1.2rem;font-weight:700;color:var(--g900)">3</div>
+            <div style="font-size:.58rem;color:var(--g400);text-transform:uppercase;letter-spacing:.06em">Projects</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-family:var(--mono);font-size:1.2rem;font-weight:700;color:var(--g900)">4.72</div>
+            <div style="font-size:.58rem;color:var(--g400);text-transform:uppercase;letter-spacing:.06em">GPA</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Intro + highlights -->
+      <div style="display:flex;flex-direction:column;gap:1rem">
+        <!-- Who I am -->
+        <div style="background:white;border:1px solid var(--g200);border-radius:12px;padding:1.25rem 1.4rem">
+          <div style="font-size:.7rem;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.6rem">Who I Am</div>
+          <p style="font-size:.88rem;color:var(--g700);line-height:1.8">
+            I'm a Data Analyst based in Riyadh with a background in Management Information Systems. I specialize in turning scattered, raw data into clear dashboards and reports that help teams make faster, better decisions. Currently, I work at <strong>Aujan Coca-Cola Beverage Company</strong>, where I build automated data pipelines, interactive Power BI dashboards, and internal tools used across the organization daily.
+          </p>
+        </div>
+
+        <!-- What I do - 3 highlight cards -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.85rem">
+          <div style="background:var(--teal-l);border:1px solid rgba(16,185,129,.2);border-radius:10px;padding:1rem">
+            <div style="font-size:1.1rem;margin-bottom:.4rem">📊</div>
+            <div style="font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--teal-d);margin-bottom:.25rem">Data Insights</div>
+            <div style="font-size:.76rem;color:var(--g600);line-height:1.6">I build dashboards and reports that translate numbers into clear business stories.</div>
+          </div>
+          <div style="background:var(--blue-ll);border:1px solid rgba(14,165,233,.2);border-radius:10px;padding:1rem">
+            <div style="font-size:1.1rem;margin-bottom:.4rem">⚙️</div>
+            <div style="font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--blue-d);margin-bottom:.25rem">Automation</div>
+            <div style="font-size:.76rem;color:var(--g600);line-height:1.6">I automate repetitive reporting tasks so teams spend time on decisions, not spreadsheets.</div>
+          </div>
+          <div style="background:var(--indigo-l);border:1px solid rgba(99,102,241,.2);border-radius:10px;padding:1rem">
+            <div style="font-size:1.1rem;margin-bottom:.4rem">🏗️</div>
+            <div style="font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--indigo);margin-bottom:.25rem">Data Pipelines</div>
+            <div style="font-size:.76rem;color:var(--g600);line-height:1.6">I design systems that collect, clean, and organize data from multiple sources automatically.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: SKILLS -->
+  <div class="screen" id="screen-2">
+    <div class="stage-header">
+      <div>
+        <div class="stage-layer">skills &amp; tools</div>
+        <h2 class="stage-title">What I <span>Work With</span></h2>
+        <p class="stage-subtitle">The tools and platforms I use to deliver results.</p>
+      </div>
+      <div class="stage-nav">
+        <button class="nav-btn nav-btn-back" onclick="goTo(1)">← About</button>
+        <button class="nav-btn nav-btn-next" onclick="goTo(3)">Projects →</button>
+      </div>
+    </div>
+
+    <!-- Intro sentence -->
+    <div style="background:white;border:1px solid var(--g200);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.1rem">
+      <p style="font-size:.86rem;color:var(--g600);line-height:1.7">I work across the full data lifecycle — from collecting and organizing raw data, to building the dashboards and reports that help decision-makers act with confidence. Here's a breakdown of what I use and what each tool helps me accomplish.</p>
+    </div>
+
+    <div class="gridauto">
+      <div class="skill-node">
+        <div class="skill-node-head"><div class="skill-icon" style="background:#F0FDFA">📊</div><div><div class="skill-node-name">Dashboards &amp; Reports</div><div class="skill-node-type">I turn data into visual stories</div></div></div>
+        <div style="font-size:.76rem;color:var(--g500);line-height:1.6;margin-bottom:.7rem">I build interactive reports that show trends, track KPIs, and help managers make decisions at a glance.</div>
+        <div class="tags"><span class="tag tag-t">Power BI</span><span class="tag tag-t">DAX</span><span class="tag tag-a">Excel Dashboards</span></div>
+      </div>
+      <div class="skill-node">
+        <div class="skill-node-head"><div class="skill-icon" style="background:#EFF6FF">🔄</div><div><div class="skill-node-name">Data Collection &amp; Processing</div><div class="skill-node-type">I organize and clean data automatically</div></div></div>
+        <div style="font-size:.76rem;color:var(--g500);line-height:1.6;margin-bottom:.7rem">I build automated systems that pull data from multiple sources, clean it, and make it ready for analysis — no manual work needed.</div>
+        <div class="tags"><span class="tag tag-b">Microsoft Fabric</span><span class="tag tag-b">Power Query</span><span class="tag tag-g">Power Automate</span></div>
+      </div>
+      <div class="skill-node">
+        <div class="skill-node-head"><div class="skill-icon" style="background:#EEF2FF">🗄️</div><div><div class="skill-node-name">Data Storage &amp; Databases</div><div class="skill-node-type">I manage where data lives</div></div></div>
+        <div style="font-size:.76rem;color:var(--g500);line-height:1.6;margin-bottom:.7rem">I work with modern cloud databases to store and query large amounts of data quickly and reliably.</div>
+        <div class="tags"><span class="tag tag-i">Snowflake</span><span class="tag tag-b">Google BigQuery</span><span class="tag tag-t">SQL</span></div>
+      </div>
+      <div class="skill-node">
+        <div class="skill-node-head"><div class="skill-icon" style="background:#FFFBEB">☁️</div><div><div class="skill-node-name">Cloud Platforms</div><div class="skill-node-type">I deploy solutions on the cloud</div></div></div>
+        <div style="font-size:.76rem;color:var(--g500);line-height:1.6;margin-bottom:.7rem">I use cloud services to host databases, run data tools, and build internal web portals accessible from anywhere in the organization.</div>
+        <div class="tags"><span class="tag tag-b">Microsoft Azure</span><span class="tag tag-b">Google Cloud</span></div>
+      </div>
+      <div class="skill-node">
+        <div class="skill-node-head"><div class="skill-icon" style="background:#F8FAFC">💻</div><div><div class="skill-node-name">Programming &amp; Automation</div><div class="skill-node-type">I write code to save time</div></div></div>
+        <div style="font-size:.76rem;color:var(--g500);line-height:1.6;margin-bottom:.7rem">I write Python and SQL scripts to automate reports, process data, and build tools that reduce manual, repetitive work.</div>
+        <div class="tags"><span class="tag tag-b">Python</span><span class="tag tag-t">SQL</span><span class="tag tag-p">AI-assisted Dev</span></div>
+      </div>
+      <div class="skill-node">
+        <div class="skill-node-head"><div class="skill-icon" style="background:#FAF5FF">🎓</div><div><div class="skill-node-name">Certifications</div><div class="skill-node-type">continuously learning</div></div></div>
+        <div style="font-size:.76rem;color:var(--g500);line-height:1.6;margin-bottom:.7rem">I hold industry certifications in data engineering, business intelligence, and data analysis — from platforms like Snowflake, Microsoft, and DataCamp.</div>
+        <div class="tags"><span class="tag tag-i">Data Engineering</span><span class="tag tag-t">Business Intelligence</span><span class="tag tag-a">Power BI</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: PROJECTS -->
+  <div class="screen" id="screen-3">
+    <div class="stage-header">
+      <div>
+        <div class="stage-layer">selected work</div>
+        <h2 class="stage-title">My <span>Projects</span></h2>
+        <p class="stage-subtitle">Real problems I solved with data — from question to answer.</p>
+      </div>
+      <div class="stage-nav">
+        <button class="nav-btn nav-btn-back" onclick="goTo(2)">← Skills</button>
+        <button class="nav-btn nav-btn-next" onclick="goTo(4)">Experience →</button>
+      </div>
+    </div>
+    <div class="projects-grid">
+
+      <!-- Project 1 -->
+      <div class="proj-card">
+        <div style="padding:.9rem 1rem .5rem;display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:1.4rem">🛒</span>
+          <span class="proj-status s-live">● Completed</span>
+        </div>
+        <div class="proj-body">
+          <div class="proj-name">E-commerce Sales Analysis</div>
+          <div style="font-size:.76rem;font-weight:600;color:var(--teal-d);margin-bottom:.5rem">What problem does it solve?</div>
+          <div class="proj-desc">An online retailer had scattered sales data with no clear view of which products were performing, which customers were most valuable, or where revenue was being lost. This project built a complete analysis from scratch — uncovering trends, grouping customers by behavior, and producing a dashboard to track performance at a glance.</div>
+          <div style="font-size:.76rem;font-weight:600;color:var(--g500);margin-bottom:.4rem;margin-top:.5rem">Tools used</div>
+          <div class="tags" style="margin-bottom:.8rem"><span class="tag tag-b">Python</span><span class="tag tag-t">Data Analysis</span><span class="tag tag-a">Charts &amp; Graphs</span><span class="tag tag-g">SQL</span></div>
+          <div style="display:flex;gap:1rem;border-top:1px solid var(--g100);padding-top:.65rem">
+            <div><div style="font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--g900)">Sales Trends</div><div style="font-size:.6rem;color:var(--g400);text-transform:uppercase">tracked</div></div>
+            <div><div style="font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--g900)">Customer Groups</div><div style="font-size:.6rem;color:var(--g400);text-transform:uppercase">identified</div></div>
+            <div><div style="font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--g900)">KPI Dashboard</div><div style="font-size:.6rem;color:var(--g400);text-transform:uppercase">delivered</div></div>
+          </div>
+          <a href="https://github.com/aseelDE/E-commerce-Data-Analytics.git" target="_blank" class="proj-gh">View Project on GitHub ↗</a>
+        </div>
+      </div>
+
+      <!-- Project 2 -->
+      <div class="proj-card">
+        <div style="padding:.9rem 1rem .5rem;display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:1.4rem">🌤️</span>
+          <span class="proj-status s-live">● Completed</span>
+        </div>
+        <div class="proj-body">
+          <div class="proj-name">Automated Weather Data Collection</div>
+          <div style="font-size:.76rem;font-weight:600;color:var(--teal-d);margin-bottom:.5rem">What problem does it solve?</div>
+          <div class="proj-desc">Manually downloading and updating weather data is slow and error-prone. This project built a fully automated system that connects to a live weather source, collects the data, cleans it, and stores it in a structured format — ready for analysis — without any human intervention needed.</div>
+          <div style="font-size:.76rem;font-weight:600;color:var(--g500);margin-bottom:.4rem;margin-top:.5rem">Tools used</div>
+          <div class="tags" style="margin-bottom:.8rem"><span class="tag tag-b">Python</span><span class="tag tag-t">Automation</span><span class="tag tag-a">Live Data Feed</span><span class="tag tag-g">Scheduling</span></div>
+          <div style="display:flex;gap:1rem;border-top:1px solid var(--g100);padding-top:.65rem">
+            <div><div style="font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--g900)">Fully Auto</div><div style="font-size:.6rem;color:var(--g400);text-transform:uppercase">no manual work</div></div>
+            <div><div style="font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--g900)">Live Data</div><div style="font-size:.6rem;color:var(--g400);text-transform:uppercase">always fresh</div></div>
+            <div><div style="font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--g900)">Clean Output</div><div style="font-size:.6rem;color:var(--g400);text-transform:uppercase">ready to use</div></div>
+          </div>
+          <a href="https://github.com/aseelDE/weather-data-pipeline.git" target="_blank" class="proj-gh">View Project on GitHub ↗</a>
+        </div>
+      </div>
+
+      <!-- Project 3 -->
+      <div class="proj-card">
+        <div style="padding:.9rem 1rem .5rem;display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:1.4rem">🏪</span>
+          <span class="proj-status s-live">● Completed</span>
+        </div>
+        <div class="proj-body">
+          <div class="proj-name">Supermarket Sales &amp; Customer Report</div>
+          <div style="font-size:.76rem;font-weight:600;color:var(--teal-d);margin-bottom:.5rem">What problem does it solve?</div>
+          <div class="proj-desc">A supermarket chain needed a clear picture of its sales performance — total revenue, best-selling categories, and customer spending patterns. This project analyzed the full dataset and produced a comprehensive report with charts and breakdowns that managers could read and act on immediately.</div>
+          <div style="font-size:.76rem;font-weight:600;color:var(--g500);margin-bottom:.4rem;margin-top:.5rem">Tools used</div>
+          <div class="tags" style="margin-bottom:.8rem"><span class="tag tag-t">SQL</span><span class="tag tag-b">Python</span><span class="tag tag-t">Power BI</span><span class="tag tag-a">Excel</span></div>
+          <div style="display:flex;gap:1rem;border-top:1px solid var(--g100);padding-top:.65rem">
+            <div><div style="font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--g900)">Revenue</div><div style="font-size:.6rem;color:var(--g400);text-transform:uppercase">analyzed</div></div>
+            <div><div style="font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--g900)">Categories</div><div style="font-size:.6rem;color:var(--g400);text-transform:uppercase">compared</div></div>
+            <div><div style="font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--g900)">Full Report</div><div style="font-size:.6rem;color:var(--g400);text-transform:uppercase">delivered</div></div>
+          </div>
+          <a href="https://github.com/aseelDE/aseelDE-Sales-Customer-Analytics.git" target="_blank" class="proj-gh">View Project on GitHub ↗</a>
+        </div>
+      </div>
+
+    </div>
+    <div style="margin-top:.9rem;padding:.75rem 1rem;background:var(--g50);border:1px solid var(--g200);border-radius:9px;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
+      <span style="font-size:.82rem;color:var(--g500)">See all my work on my portfolio site:</span>
+      <a href="https://sites.google.com/view/assel0/projects" target="_blank" style="font-family:var(--mono);font-size:.72rem;font-weight:600;color:var(--blue-d);text-decoration:none;background:var(--blue-ll);padding:4px 12px;border-radius:6px;border:1px solid var(--blue-l)">sites.google.com/view/assel0/projects ↗</a>
+    </div>
+  </div>
+
+  <!-- SCREEN 4: EXPERIENCE -->
+  <div class="screen" id="screen-4">
+    <div class="stage-header">
+      <div>
+        <div class="stage-layer">career journey</div>
+        <h2 class="stage-title">Experience &amp; <span>Education</span></h2>
+        <p class="stage-subtitle">Where I've worked, what I studied, and how I've grown.</p>
+      </div>
+      <div class="stage-nav">
+        <button class="nav-btn nav-btn-back" onclick="goTo(3)">← Projects</button>
+        <button class="nav-btn nav-btn-next" onclick="goTo(5)">Contact →</button>
+      </div>
+    </div>
+    <div class="exp-layout">
+      <div>
+        <div style="font-size:.7rem;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.8rem">Work Experience</div>
+        <div class="timeline">
+          <div class="t-item">
+            <div class="t-dot"></div>
+            <div class="t-card">
+              <div class="t-head">
+                <div>
+                  <div class="t-title">Data Analyst</div>
+                  <div class="t-company">Aujan Coca-Cola Beverage Company (ACCBC) · Riyadh</div>
+                </div>
+                <span class="t-date">Aug 2025 – Present</span>
+              </div>
+              <p class="t-desc" style="margin-bottom:.7rem">I work at the Riyadh head office analyzing sales data to help business teams understand performance and make better decisions. My day-to-day includes building interactive dashboards, automating daily sales reports, and developing internal tools and web portals that teams across the company rely on.</p>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:.7rem">
+                <div style="background:var(--teal-l);border-radius:7px;padding:6px 8px;text-align:center">
+                  <div style="font-size:.7rem;font-weight:700;color:var(--teal-d)">Dashboards</div>
+                  <div style="font-size:.62rem;color:var(--g500)">Power BI reports</div>
+                </div>
+                <div style="background:var(--blue-ll);border-radius:7px;padding:6px 8px;text-align:center">
+                  <div style="font-size:.7rem;font-weight:700;color:var(--blue-d)">Automation</div>
+                  <div style="font-size:.62rem;color:var(--g500)">Daily reports</div>
+                </div>
+                <div style="background:var(--indigo-l);border-radius:7px;padding:6px 8px;text-align:center">
+                  <div style="font-size:.7rem;font-weight:700;color:var(--indigo)">Web Portals</div>
+                  <div style="font-size:.62rem;color:var(--g500)">Internal tools</div>
+                </div>
+              </div>
+              <div class="t-tags"><span class="tag tag-b">Microsoft Fabric</span><span class="tag tag-t">Power BI</span><span class="tag tag-b">Azure</span><span class="tag tag-g">ETL</span></div>
+            </div>
+          </div>
+          <div class="t-item">
+            <div class="t-dot"></div>
+            <div class="t-card">
+              <div class="t-head">
+                <div>
+                  <div class="t-title">ICT Engineer</div>
+                  <div class="t-company">AECOM – NEOM Airport Project · Neom, KSA</div>
+                </div>
+                <span class="t-date">Aug 2023 – Apr 2025</span>
+              </div>
+              <p class="t-desc">Worked on one of the world's most ambitious infrastructure projects — NEOM Airport. I reviewed technical designs, coordinated between contractors and stakeholders, and helped ensure that all communication and technology systems at the airport were correctly planned and installed to specification.</p>
+              <div class="t-tags"><span class="tag tag-b">Large-scale Projects</span><span class="tag tag-g">Stakeholder Coordination</span><span class="tag tag-a">Technical Review</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:.7rem;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.8rem">Education</div>
+        <div class="edu-card" style="margin-bottom:.85rem">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem;flex-wrap:wrap;gap:5px">
+            <div>
+              <div style="font-size:.9rem;font-weight:700;color:var(--g900)">BSc Management Information Systems</div>
+              <div style="font-size:.78rem;color:var(--indigo);font-weight:500;margin-top:.15rem">University of Tabuk · Tabuk, KSA</div>
+            </div>
+            <span style="font-family:var(--mono);font-size:.62rem;background:var(--indigo-l);color:var(--indigo);padding:3px 9px;border-radius:5px;white-space:nowrap">2019 – 2023</span>
+          </div>
+          <p style="font-size:.8rem;color:var(--g600);line-height:1.65;margin-bottom:.7rem">A degree that bridges business and technology — covering databases, systems analysis, programming, and how organizations use information to make decisions.</p>
+          <span style="font-family:var(--mono);font-size:.72rem;font-weight:700;color:var(--teal-d);background:var(--teal-l);padding:3px 10px;border-radius:5px">Graduated with GPA 4.72 / 5.0</span>
+        </div>
+
+        <div style="font-size:.7rem;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.7rem">Professional Certifications</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:white;border:1px solid var(--g200);border-radius:8px;font-size:.78rem;color:var(--g700)">
+            <span style="font-size:.9rem;flex-shrink:0">🏅</span> Associate Data Engineer — Snowflake
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:white;border:1px solid var(--g200);border-radius:8px;font-size:.78rem;color:var(--g700)">
+            <span style="font-size:.9rem;flex-shrink:0">🏅</span> Data Analysis using Power BI
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:white;border:1px solid var(--g200);border-radius:8px;font-size:.78rem;color:var(--g700)">
+            <span style="font-size:.9rem;flex-shrink:0">🏅</span> Business Intelligence Path
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:white;border:1px solid var(--g200);border-radius:8px;font-size:.78rem;color:var(--g700)">
+            <span style="font-size:.9rem;flex-shrink:0">🏅</span> Data Ingestion &amp; Semantic Models — Microsoft Fabric
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:white;border:1px solid var(--g200);border-radius:8px;font-size:.78rem;color:var(--g700)">
+            <span style="font-size:.9rem;flex-shrink:0">🏅</span> Data Visualization &amp; Dashboards with Excel
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:white;border:1px solid var(--g200);border-radius:8px;font-size:.78rem;color:var(--g700)">
+            <span style="font-size:.9rem;flex-shrink:0">🏅</span> Reporting in SQL · Importing Data in Python
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 5: CONTACT -->
+  <div class="screen" id="screen-5">
+    <div class="stage-header">
+      <div>
+        <div class="stage-layer">reach out</div>
+        <h2 class="stage-title">Get in <span>Touch</span></h2>
+        <p class="stage-subtitle">I'd love to hear from you — whether it's a role, a project, or just a conversation.</p>
+      </div>
+      <div class="stage-nav">
+        <button class="nav-btn nav-btn-back" onclick="goTo(4)">← Experience</button>
+        <button class="nav-btn nav-btn-finish" onclick="goTo(1)">↺ Start Over</button>
+      </div>
+    </div>
+    <div class="contact-wrap">
+      <div class="contact-card">
+        <div style="text-align:center;margin-bottom:1.5rem">
+          <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--blue-l),var(--teal-l));display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:1.1rem;font-weight:700;color:var(--blue-d);margin:0 auto .75rem">AA</div>
+          <div class="contact-title">Aseel Alzahrani</div>
+          <div class="contact-sub">Data Analyst · Riyadh, Saudi Arabia<br>Open to new roles and collaborations.</div>
+        </div>
+        <div class="clinks">
+          <a href="mailto:alzahraniaseel0@gmail.com" class="clink"><div class="clink-icon" style="background:#EFF6FF">📧</div>alzahraniaseel0@gmail.com<span style="margin-left:auto;flex-shrink:0;color:var(--g300);font-size:.72rem">→</span></a>
+          <a href="https://www.linkedin.com/in/aseel-alzahrani-45ba06208/" target="_blank" class="clink"><div class="clink-icon" style="background:#EFF6FF">💼</div>LinkedIn Profile<span style="margin-left:auto;flex-shrink:0;color:var(--g300);font-size:.72rem">↗</span></a>
+          <a href="https://github.com/aseelDE" target="_blank" class="clink"><div class="clink-icon" style="background:#F8FAFC">💻</div>GitHub — View my code<span style="margin-left:auto;flex-shrink:0;color:var(--g300);font-size:.72rem">↗</span></a>
+          <a href="https://sites.google.com/view/assel0/projects" target="_blank" class="clink"><div class="clink-icon" style="background:#F0FDFA">🌐</div>Full Portfolio Website<span style="margin-left:auto;flex-shrink:0;color:var(--g300);font-size:.72rem">↗</span></a>
+          <a href="tel:+966598261537" class="clink"><div class="clink-icon" style="background:#FFFBEB">📞</div>+966 598 261 537<span style="margin-left:auto;flex-shrink:0;color:var(--g300);font-size:.72rem">→</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- STATUS BAR -->
+<div id="status-bar">
+  <div class="sb-item"><div class="sb-dot sb-green"></div>pipeline: running</div>
+  <div class="sb-item"><div class="sb-dot sb-blue"></div><span id="sb-stage">About Me · Who I am</span></div>
+  <div class="sb-sep"></div>
+  <div class="sb-item" id="sb-progress">1 / 5 stages</div>
+  <div class="sb-item sb-keys">← → arrow keys</div>
+</div>
+
+<script>
+const STAGES=[
+  {id:'entry',      badge:'entry',     file:'boot.sh'},
+  {id:'About Me',   badge:'source',    file:'Who I am'},
+  {id:'Skills',     badge:'ingest',    file:'What I work with'},
+  {id:'Projects',   badge:'transform', file:'What I built'},
+  {id:'Experience', badge:'model',     file:'Where I worked'},
+  {id:'Contact',    badge:'serve',     file:'Reach out'},
+];
+const LABELS=['','About','Skills','Projects','Experience','Contact'];
+
+let current=1;
+const visited=new Set([1]);
+
+function buildBar(){
+  const t=document.getElementById('pipe-track');
+  t.innerHTML='';
+  for(let i=1;i<=5;i++){
+    if(i>1){
+      const c=document.createElement('div');
+      c.className='pipe-conn'+(visited.has(i-1)||visited.has(i)?' done':'');
+      c.innerHTML='<div class="pipe-conn-flow"></div>';
+      t.appendChild(c);
+    }
+    const s=STAGES[i];
+    const isActive=i===current;
+    const wasVisited=visited.has(i)&&!isActive;
+    const n=document.createElement('div');
+    n.className='pipe-node'+(isActive?' active':'')+(wasVisited?' visited':'');
+    n.innerHTML=`<div class="pn-top"><span class="pn-badge">${s.badge}</span><span class="pn-check">✓</span></div><div class="pn-name">${LABELS[i]}</div><div class="pn-file">${s.file}</div>`;
+    n.onclick=()=>goTo(i);
+    t.appendChild(n);
+  }
+}
+
+function goTo(idx){
+  if(idx<0||idx>5)return;
+  const prev=current;
+  if(prev===idx)return;
+  const pe=document.getElementById('screen-'+prev);
+  const ne=document.getElementById('screen-'+idx);
+  const dir=idx>prev?1:-1;
+
+  /* If restarting, wipe all visited history first */
+  if(idx===1 && prev!==0){
+    visited.clear();
+  }
+
+  /* 1. Instantly hide the outgoing screen */
+  pe.classList.remove('active');
+  pe.classList.add('exiting');
+  setTimeout(()=>{pe.classList.remove('exiting');pe.style.cssText='';},50);
+
+  /* 2. Position incoming off-screen instantly */
+  ne.style.cssText=`transition:none;transform:translateX(${dir*48}px);opacity:0;visibility:visible`;
+
+  /* 3. Slide in */
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    ne.style.cssText='transition:opacity .28s ease,transform .28s ease;transform:translateX(0);opacity:1;visibility:visible';
+    ne.classList.add('active');
+    setTimeout(()=>{ne.style.cssText='';},320);
+  }));
+
+  current=idx;
+  visited.add(idx);
+  buildBar();
+
+  const s=STAGES[idx];
+  document.getElementById('sb-stage').textContent=s.id+' · '+s.file;
+  const done=Math.max(0,[...visited].filter(x=>x>0).length);
+  document.getElementById('sb-progress').textContent=Math.min(done,5)+' / 5 stages';
+}
+
+buildBar();
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown') goTo(Math.min(current+1,5));
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')    goTo(Math.max(current-1,1));
+});
+</script>
+</body>
+</html>
