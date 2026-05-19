@@ -1,879 +1,1465 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aseel Alzahrani · Data Pipeline Portfolio</title>
+<meta name="description" content="Aseel Alzahrani — Data Analyst specializing in Power BI, ETL pipelines, and cloud data platforms. Based in Riyadh, Saudi Arabia.">
+<title>Aseel Alzahrani · Data Analyst</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  --bg:      #F8FAFC;
+  --bg2:     #F1F5F9;
+  --bg3:     #E2E8F0;
+  --card:    #FFFFFF;
+  --border:  rgba(15,23,42,.08);
+  --border2: rgba(15,23,42,.14);
+  --sh:      0 1px 3px rgba(15,23,42,.08),0 4px 12px rgba(15,23,42,.06);
+  --sh-lg:   0 4px 24px rgba(15,23,42,.12),0 12px 40px rgba(15,23,42,.08);
+  --text:    #0F172A;
+  --text2:   #334155;
+  --text3:   #64748B;
+  --text4:   #94A3B8;
+
+  /* always-dark section colours — light mode: softer mid-navy */
+  --dk:      #0D1B3E;
+  --dk2:     #112248;
+  --dk3:     #152B55;
+  --dk-bdr:  rgba(255,255,255,.1);
+
+  /* accents */
+  --blue:    #2563EB;
+  --blue-l:  #3B82F6;
+  --blue-bg: rgba(37,99,235,.08);
+  --blue-bd: rgba(37,99,235,.2);
+  --teal:    #0D9488;
+  --teal-l:  #14B8A6;
+  --violet:  #7C3AED;
+  --violet-l:#8B5CF6;
+  --amber:   #D97706;
+  --amber-l: #F59E0B;
+  --green:   #16A34A;
+
+  --nav-h:   68px;
+  --mw:      1200px;
+  --px:      2.5rem;
+  --py:      6rem;
+  --f-hd:    'Plus Jakarta Sans',sans-serif;
+  --f-bd:    'Inter',sans-serif;
+  --f-mo:    'JetBrains Mono',monospace;
+  --ease:    cubic-bezier(.16,1,.3,1);
+}
+
+[data-theme="dark"] {
+  --bg:      #050B14;
+  --bg2:     #0A1221;
+  --bg3:     #0F1A2E;
+  --dk:      #050B14;
+  --dk2:     #0A1221;
+  --dk3:     #0F1A2E;
+  --dk-bdr:  rgba(255,255,255,.08);
+  --card:    rgba(255,255,255,.04);
+  --border:  rgba(255,255,255,.08);
+  --border2: rgba(255,255,255,.14);
+  --sh:      0 1px 3px rgba(0,0,0,.3),0 4px 12px rgba(0,0,0,.2);
+  --sh-lg:   0 4px 24px rgba(0,0,0,.4),0 12px 40px rgba(0,0,0,.3);
+  --text:    #F1F5F9;
+  --text2:   #CBD5E1;
+  --text3:   #94A3B8;
+  --text4:   #64748B;
+  --blue-bg: rgba(59,130,246,.12);
+  --blue-bd: rgba(59,130,246,.25);
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --blue:#0EA5E9;--blue-d:#0284C7;--blue-l:#E0F2FE;--blue-ll:#F0F9FF;
-  --teal:#10B981;--teal-d:#059669;--teal-l:#D1FAE5;
-  --indigo:#6366F1;--indigo-l:#EEF2FF;
-  --amber:#F59E0B;
-  --g50:#F8FAFC;--g100:#F1F5F9;--g200:#E2E8F0;--g300:#CBD5E1;
-  --g400:#94A3B8;--g500:#64748B;--g600:#475569;--g700:#334155;--g800:#1E293B;--g900:#0F172A;
-  --mono:'JetBrains Mono',monospace;
-  --sans:'DM Sans',sans-serif;
-  --bar-h:80px;
+html{scroll-behavior:smooth;font-size:16px}
+body{
+  font-family:var(--f-bd);
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+  transition:background .4s var(--ease),color .4s var(--ease);
 }
-html,body{height:100%;overflow:hidden}
-body{font-family:var(--sans);background:#FAFCFF;color:var(--g800);display:flex;flex-direction:column}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+img{display:block;max-width:100%}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--text4);border-radius:3px}
 
-/* ══════════════════════════
-   PIPELINE BAR
-══════════════════════════ */
-#pipeline-bar{
-  flex-shrink:0;
-  background:white;
-  border-bottom:1px solid var(--g200);
-  padding:0 1.25rem;
-  height:var(--bar-h);
-  display:flex;
-  align-items:center;
-  gap:0;
-  overflow:hidden;
+/* ============================================================
+   SCROLL PROGRESS
+   ============================================================ */
+#scroll-bar{
+  position:fixed;top:0;left:0;height:2.5px;width:0%;
+  background:linear-gradient(90deg,var(--blue),var(--teal-l));
+  z-index:9999;transition:width .1s linear;
 }
-.pipe-logo{
-  font-family:var(--mono);font-size:.7rem;font-weight:700;color:var(--g900);
-  white-space:nowrap;margin-right:1rem;display:flex;flex-direction:column;gap:4px;flex-shrink:0;
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+#nav{
+  position:fixed;top:0;left:0;right:0;height:var(--nav-h);
+  z-index:900;
+  border-bottom:1px solid transparent;
+  transition:background .3s,border-color .3s,backdrop-filter .3s;
 }
-.pipe-logo-top{display:flex;align-items:center;gap:6px}
-.pipe-logo-dot{width:8px;height:8px;border-radius:50%;background:var(--teal);animation:pdot 2s ease-in-out infinite}
-@keyframes pdot{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.4)}50%{box-shadow:0 0 0 5px rgba(16,185,129,0)}}
-.pipe-logo-sub{font-size:.56rem;color:var(--g400);letter-spacing:.03em}
-
-.pipe-track{display:flex;align-items:center;flex:1;min-width:0;gap:0;height:100%;overflow:hidden}
-
-.pipe-conn{
-  flex-shrink:1;width:20px;min-width:8px;height:2px;
-  background:var(--g200);position:relative;overflow:hidden;
+#nav.scrolled{
+  background:rgba(5,11,20,.88);
+  border-color:rgba(255,255,255,.08);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
 }
-.pipe-conn-flow{position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,var(--blue),transparent);animation:pflow 1.5s linear infinite}
-.pipe-conn.done .pipe-conn-flow{background:linear-gradient(90deg,transparent,var(--teal),transparent)}
-@keyframes pflow{to{left:100%}}
+[data-theme="light"] #nav.scrolled{
+  background:rgba(248,250,252,.92);
+  border-color:rgba(15,23,42,.08);
+}
 
-.pipe-node{
-  flex:1;min-width:0;
-  display:flex;flex-direction:column;align-items:flex-start;gap:3px;
-  padding:8px 10px;border-radius:9px;cursor:pointer;transition:all .2s;
-  border:1.5px solid var(--g200);background:var(--g50);
+.nav-in{
+  max-width:var(--mw);margin:0 auto;
+  height:100%;padding:0 var(--px);
+  display:flex;align-items:center;gap:1.5rem;
+}
+
+.nav-logo{display:flex;align-items:center;gap:.75rem;flex-shrink:0}
+.nav-mark{
+  width:36px;height:36px;border-radius:9px;
+  background:linear-gradient(135deg,var(--blue),var(--teal));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--f-hd);font-size:.8rem;font-weight:800;color:#fff;
+  letter-spacing:-.02em;
+}
+.nav-name{
+  font-family:var(--f-hd);font-size:.9rem;font-weight:700;
+  color:#fff;letter-spacing:-.01em;
+}
+[data-theme="light"] #nav.scrolled .nav-name{color:var(--text)}
+
+.nav-links{display:flex;align-items:center;gap:.15rem;margin-left:1.5rem;flex:1}
+.nav-a{
+  font-size:.83rem;font-weight:500;
+  color:rgba(203,213,225,.75);
+  padding:.38rem .72rem;border-radius:7px;
+  transition:color .15s,background .15s;
+}
+.nav-a:hover,.nav-a.active{color:#fff;background:rgba(255,255,255,.08)}
+.nav-a.active{color:#93C5FD;background:rgba(59,130,246,.14)}
+[data-theme="light"] #nav.scrolled .nav-a{color:var(--text3)}
+[data-theme="light"] #nav.scrolled .nav-a:hover{color:var(--text);background:var(--bg2)}
+[data-theme="light"] #nav.scrolled .nav-a.active{color:var(--blue);background:var(--blue-bg)}
+
+.nav-end{display:flex;align-items:center;gap:.65rem;margin-left:auto}
+
+.theme-btn{
+  width:36px;height:36px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  color:rgba(203,213,225,.7);
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.08);
+  transition:all .15s;flex-shrink:0;
+}
+.theme-btn:hover{color:#fff;background:rgba(255,255,255,.13)}
+[data-theme="light"] #nav.scrolled .theme-btn{
+  color:var(--text3);background:var(--bg2);border-color:var(--border);
+}
+
+.nav-cta{
+  font-size:.82rem;font-weight:600;
+  padding:.44rem 1.1rem;border-radius:8px;
+  background:var(--blue);color:#fff;
+  transition:all .15s;white-space:nowrap;
+  box-shadow:0 2px 12px rgba(37,99,235,.3);
+}
+.nav-cta:hover{background:var(--blue-l);transform:translateY(-1px);box-shadow:0 6px 20px rgba(37,99,235,.4)}
+
+.ham{
+  display:none;width:36px;height:36px;border-radius:8px;
+  flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);
+}
+.ham span{display:block;width:18px;height:1.5px;background:#fff;border-radius:2px;transition:all .25s}
+.ham.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.ham.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.ham.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+
+/* Mobile menu */
+#mob-menu{
+  position:fixed;inset:0;top:var(--nav-h);
+  background:rgba(5,11,20,.97);backdrop-filter:blur(24px);
+  z-index:850;padding:2rem var(--px);
+  display:flex;flex-direction:column;gap:.25rem;
+  transform:translateY(-8px);opacity:0;pointer-events:none;
+  transition:transform .3s var(--ease),opacity .3s;
+}
+#mob-menu.open{transform:none;opacity:1;pointer-events:all}
+[data-theme="light"] #mob-menu{background:rgba(248,250,252,.97)}
+.mob-a{
+  font-family:var(--f-hd);font-size:1.5rem;font-weight:700;
+  color:rgba(203,213,225,.65);padding:.7rem 0;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  transition:color .15s;
+}
+.mob-a:hover{color:#fff}
+[data-theme="light"] .mob-a{color:var(--text3);border-color:var(--border)}
+[data-theme="light"] .mob-a:hover{color:var(--text)}
+.mob-cta{
+  margin-top:1.5rem;display:inline-flex;align-items:center;gap:8px;
+  font-size:1rem;font-weight:600;padding:.75rem 1.5rem;
+  border-radius:10px;background:var(--blue);color:#fff;width:fit-content;
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+#hero{
+  min-height:100vh;background:var(--dk);
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;
+  padding-top:var(--nav-h);
+}
+
+.blob{
+  position:absolute;border-radius:50%;
+  filter:blur(80px);pointer-events:none;
+}
+.blob-1{
+  width:700px;height:700px;
+  background:radial-gradient(circle,rgba(37,99,235,.35) 0%,transparent 65%);
+  top:-220px;left:-180px;
+  animation:drift 16s ease-in-out infinite;
+}
+.blob-2{
+  width:580px;height:580px;
+  background:radial-gradient(circle,rgba(13,148,136,.28) 0%,transparent 65%);
+  top:30%;right:-200px;
+  animation:drift 20s ease-in-out infinite reverse;
+  animation-delay:-7s;
+}
+.blob-3{
+  width:480px;height:480px;
+  background:radial-gradient(circle,rgba(124,58,237,.26) 0%,transparent 65%);
+  bottom:-80px;left:38%;
+  animation:drift 24s ease-in-out infinite;
+  animation-delay:-13s;
+}
+@keyframes drift{
+  0%,100%{transform:translate(0,0) scale(1)}
+  25%{transform:translate(40px,-35px) scale(1.06)}
+  50%{transform:translate(-25px,45px) scale(.94)}
+  75%{transform:translate(35px,18px) scale(1.03)}
+}
+
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.026) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.026) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;
+}
+.hero-vignette{
+  position:absolute;bottom:0;left:0;right:0;height:180px;
+  background:linear-gradient(to bottom,transparent,var(--dk));
+  pointer-events:none;
+}
+
+.hero-in{
+  position:relative;z-index:1;
+  max-width:var(--mw);margin:0 auto;
+  padding:5rem var(--px);width:100%;
+  display:grid;grid-template-columns:1fr 440px;
+  gap:4rem;align-items:center;
+}
+
+.hero-left{display:flex;flex-direction:column;gap:1.85rem}
+
+.hero-pill{
+  display:inline-flex;align-items:center;gap:8px;
+  width:fit-content;
+  font-family:var(--f-mo);font-size:.7rem;font-weight:500;
+  letter-spacing:.09em;text-transform:uppercase;
+  color:var(--teal-l);
+  background:rgba(20,184,166,.1);
+  border:1px solid rgba(20,184,166,.25);
+  padding:6px 16px;border-radius:100px;
+}
+.pill-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--teal-l);
+  animation:ping 2s ease-in-out infinite;
+}
+@keyframes ping{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.75)}}
+
+.hero-h{
+  font-family:var(--f-hd);
+  font-size:clamp(3rem,5.5vw,4.5rem);
+  font-weight:800;line-height:1.06;
+  letter-spacing:-.04em;color:#fff;
+}
+.hero-h .accent{
+  display:block;
+  background:linear-gradient(135deg,var(--blue-l) 0%,var(--teal-l) 60%,#34D399 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+.hero-p{font-size:1.05rem;color:rgba(203,213,225,.8);line-height:1.78;max-width:460px}
+.hero-p strong{color:rgba(241,245,249,.95);font-weight:600}
+
+.hero-stats{
+  display:flex;width:fit-content;
+  border:1px solid rgba(255,255,255,.08);border-radius:12px;
+  overflow:hidden;background:rgba(255,255,255,.03);
+}
+.hs{
+  padding:.95rem 1.4rem;display:flex;flex-direction:column;gap:2px;
+  border-right:1px solid rgba(255,255,255,.07);
+}
+.hs:last-child{border-right:none}
+.hs-n{
+  font-family:var(--f-hd);font-size:1.55rem;font-weight:800;
+  color:#fff;line-height:1;letter-spacing:-.03em;
+}
+.hs-l{font-size:.62rem;font-weight:500;color:rgba(148,163,184,.65);text-transform:uppercase;letter-spacing:.09em}
+
+.hero-btns{display:flex;gap:.75rem;flex-wrap:wrap}
+.btn-p{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:.87rem;font-weight:600;
+  padding:.72rem 1.55rem;border-radius:10px;
+  background:var(--blue);color:#fff;
+  transition:all .2s;
+  box-shadow:0 4px 20px rgba(37,99,235,.35);
+}
+.btn-p:hover{background:var(--blue-l);transform:translateY(-2px);box-shadow:0 8px 28px rgba(37,99,235,.45)}
+.btn-g{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:.87rem;font-weight:600;
+  padding:.72rem 1.55rem;border-radius:10px;
+  color:rgba(203,213,225,.9);
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12);
+  transition:all .2s;
+}
+.btn-g:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:#fff}
+
+/* BI card */
+.hero-right{position:relative}
+.card-glow{
+  position:absolute;inset:-50px;border-radius:50%;
+  background:radial-gradient(ellipse 80% 80% at 50% 50%,rgba(37,99,235,.14) 0%,transparent 70%);
+  pointer-events:none;
+}
+.bi-card{
+  background:rgba(8,15,28,.92);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:20px;overflow:hidden;
+  box-shadow:0 0 0 1px rgba(255,255,255,.04) inset,0 32px 80px rgba(0,0,0,.55),0 4px 16px rgba(37,99,235,.1);
+  position:relative;z-index:1;backdrop-filter:blur(4px);
+}
+.bi-bar{
+  position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--blue),var(--teal-l),var(--violet-l));
+}
+.bi-tb{
+  background:rgba(5,11,20,.8);padding:.68rem 1rem;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.bi-dots{display:flex;gap:5px}
+.bd{width:9px;height:9px;border-radius:50%}
+.bd-r{background:#FF5F57}.bd-y{background:#FEBC2E}.bd-g{background:#28C840}
+.bi-tb-txt{font-family:var(--f-mo);font-size:.58rem;color:rgba(148,163,184,.45);letter-spacing:.04em}
+.bi-live{
+  font-family:var(--f-mo);font-size:.53rem;font-weight:600;
+  padding:2px 8px;border-radius:4px;letter-spacing:.08em;
+  background:rgba(34,197,94,.13);color:#4ADE80;border:1px solid rgba(34,197,94,.22);
+}
+.bi-body{padding:1rem}
+.bi-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-bottom:.8rem}
+.bi-kpi{
+  background:rgba(5,11,20,.7);border:1px solid rgba(255,255,255,.07);
+  border-radius:10px;padding:.72rem .8rem;
   position:relative;overflow:hidden;
 }
-.pipe-node::before{content:'';position:absolute;top:0;left:0;right:0;height:2.5px;background:var(--g200);transition:background .2s}
-.pipe-node:hover{border-color:var(--blue);background:var(--blue-ll);transform:translateY(-2px);box-shadow:0 4px 14px rgba(14,165,233,.12)}
-.pipe-node:hover::before{background:var(--blue)}
-.pipe-node.active{border-color:var(--blue);background:var(--blue-ll);box-shadow:0 4px 16px rgba(14,165,233,.15)}
-.pipe-node.active::before{background:var(--blue)}
-.pipe-node.visited{border-color:rgba(16,185,129,.35);background:rgba(240,253,250,.6)}
-.pipe-node.visited::before{background:var(--teal)}
-.pn-top{display:flex;align-items:center;gap:5px;width:100%;min-width:0}
-.pn-badge{
-  font-family:var(--mono);font-size:.52rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
-  padding:1px 5px;border-radius:3px;flex-shrink:0;white-space:nowrap;
-  background:var(--g100);color:var(--g400);border:1px solid var(--g200);
+.bi-kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.kpi-b::before{background:linear-gradient(90deg,#2563EB,#3B82F6)}
+.kpi-t::before{background:linear-gradient(90deg,#0D9488,#14B8A6)}
+.kpi-v::before{background:linear-gradient(90deg,#7C3AED,#8B5CF6)}
+.bi-lbl{font-size:.49rem;font-weight:500;color:rgba(148,163,184,.5);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.22rem}
+.bi-val{font-family:var(--f-hd);font-size:.98rem;font-weight:700;color:#fff;line-height:1}
+.bi-delta{font-size:.46rem;font-weight:600;margin-top:.18rem}
+.up{color:#4ADE80}.dn{color:#F87171}.wn{color:#FBBF24}
+
+.bi-chart{
+  background:rgba(5,11,20,.5);border:1px solid rgba(255,255,255,.06);
+  border-radius:10px;padding:.72rem;margin-bottom:.72rem;
 }
-.pipe-node.active .pn-badge{background:var(--blue-l);color:var(--blue-d);border-color:rgba(14,165,233,.3)}
-.pipe-node.visited:not(.active) .pn-badge{background:var(--teal-l);color:var(--teal-d);border-color:rgba(16,185,129,.3)}
-.pn-check{margin-left:auto;width:14px;height:14px;border-radius:50%;background:var(--teal);display:none;align-items:center;justify-content:center;font-size:.5rem;color:white;flex-shrink:0}
-.pipe-node.visited:not(.active) .pn-check{display:flex}
-.pn-name{font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--g700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
-.pipe-node.active .pn-name,.pipe-node:hover .pn-name{color:var(--g900)}
-.pn-file{font-family:var(--mono);font-size:.56rem;color:var(--g300);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
-.pipe-node.active .pn-file{color:var(--blue)}
-.pipe-node.visited:not(.active) .pn-file{color:var(--teal-d);opacity:.7}
+.bi-ch-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:.55rem}
+.bi-ch-lbl{font-size:.56rem;font-weight:600;color:rgba(148,163,184,.5);text-transform:uppercase;letter-spacing:.1em}
+.bi-leg{display:flex;gap:.6rem}
+.bi-li{display:flex;align-items:center;gap:4px;font-size:.49rem;color:rgba(148,163,184,.45)}
+.bi-li-dot{width:6px;height:6px;border-radius:50%}
+.bi-svg{width:100%;height:78px;display:block}
+.bi-labs{display:flex;justify-content:space-around;margin-top:.28rem}
+.bi-labs span{font-size:.44rem;color:rgba(148,163,184,.38)}
 
-/* ══════════════════════════
-   STAGE AREA
-══════════════════════════ */
-#stage{flex:1;overflow:hidden;position:relative}
-.screen{
-  position:absolute;inset:0;display:flex;flex-direction:column;
-  padding:1.5rem;opacity:0;pointer-events:none;
-  transform:translateX(40px);overflow-y:auto;
-  z-index:0;visibility:hidden;
-  /* no transition by default — JS manages it per-element */
+.bi-btm{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.bi-pnl{
+  background:rgba(5,11,20,.5);border:1px solid rgba(255,255,255,.06);
+  border-radius:10px;padding:.68rem .72rem;
 }
-.screen.active{opacity:1;pointer-events:all;transform:translateX(0);z-index:2;visibility:visible}
-.screen.exiting{opacity:0;z-index:1;visibility:hidden;pointer-events:none}
+.bi-pnl-lbl{font-size:.49rem;font-weight:600;color:rgba(148,163,184,.45);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem}
+.spark-svg{width:100%;height:28px;display:block}
+.bi-row{display:flex;justify-content:space-between;align-items:center;padding:.18rem 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.bi-row:last-child{border:none}
+.bi-rn{font-size:.5rem;color:rgba(203,213,225,.55)}
+.bi-rv{font-size:.5rem;font-weight:700}
+.bi-rv.g{color:#4ADE80}.bi-rv.b{color:#60A5FA}.bi-rv.y{color:#FBBF24}
 
-/* Stage header */
-.stage-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:.75rem}
-.stage-layer{font-family:var(--mono);font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:4px;display:flex;align-items:center;gap:6px}
-.stage-layer::before{content:'';width:16px;height:1.5px;background:var(--blue)}
-.stage-title{font-family:var(--mono);font-size:clamp(1.3rem,4vw,2.1rem);font-weight:700;color:var(--g900);letter-spacing:-.02em;line-height:1.1}
-.stage-title span{color:var(--blue)}
-.stage-subtitle{font-size:.85rem;color:var(--g500);margin-top:.3rem;font-weight:300}
-.stage-nav{display:flex;gap:8px;align-items:center;flex-shrink:0;flex-wrap:wrap}
-.nav-btn{font-family:var(--mono);font-size:.68rem;font-weight:600;padding:7px 14px;border-radius:7px;border:none;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
-.nav-btn-next{background:var(--blue);color:white;box-shadow:0 3px 10px rgba(14,165,233,.3)}
-.nav-btn-next:hover{background:var(--blue-d);transform:translateY(-1px)}
-.nav-btn-back{background:white;color:var(--g600);border:1px solid var(--g200)}
-.nav-btn-back:hover{border-color:var(--g400);color:var(--g800)}
-.nav-btn-finish{background:var(--teal);color:white;box-shadow:0 3px 10px rgba(16,185,129,.3)}
-.nav-btn-finish:hover{background:var(--teal-d);transform:translateY(-1px)}
+/* animated bars */
+.bi-bar-anim{transform-box:fill-box;transform-origin:50% 100%;animation:barUp .9s var(--ease) both}
+.ba1{animation-delay:.4s}.ba2{animation-delay:.5s}.ba3{animation-delay:.6s}
+.ba4{animation-delay:.7s}.ba5{animation-delay:.8s}.ba6{animation-delay:.9s}
+.ba7{animation-delay:.45s}.ba8{animation-delay:.55s}.ba9{animation-delay:.65s}
+.ba10{animation-delay:.75s}.ba11{animation-delay:.85s}.ba12{animation-delay:.95s}
+@keyframes barUp{from{transform:scaleY(0);opacity:0}to{transform:scaleY(1);opacity:1}}
 
-/* Tags */
-.tags{display:flex;flex-wrap:wrap;gap:4px}
-.tag{font-family:var(--mono);font-size:.63rem;font-weight:500;padding:2px 8px;border-radius:5px;border:1px solid}
-.tag-b{color:#0369A1;background:#EFF6FF;border-color:#BFDBFE}
-.tag-t{color:#0F766E;background:#F0FDFA;border-color:#99F6E4}
-.tag-i{color:#4338CA;background:#EEF2FF;border-color:#C7D2FE}
-.tag-a{color:#B45309;background:#FFFBEB;border-color:#FDE68A}
-.tag-g{color:#374151;background:#F9FAFB;border-color:#E5E7EB}
-.tag-p{color:#6B21A8;background:#FAF5FF;border-color:#E9D5FF}
+/* ============================================================
+   SECTION BASE
+   ============================================================ */
+section{padding:var(--py) 0}
+.sec-in{max-width:var(--mw);margin:0 auto;padding:0 var(--px)}
+.sec-dk{background:var(--dk)}
 
-/* ══════════════════════════
-   HERO ENTRY
-══════════════════════════ */
-.hero-screen{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;padding:1.5rem;
-  background:
-    radial-gradient(ellipse 80% 50% at 50% 30%,rgba(14,165,233,.07) 0%,transparent 70%),
-    repeating-linear-gradient(rgba(14,165,233,.04) 0,rgba(14,165,233,.04) 1px,transparent 1px,transparent 40px),
-    repeating-linear-gradient(90deg,rgba(14,165,233,.04) 0,rgba(14,165,233,.04) 1px,transparent 1px,transparent 40px);
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--f-mo);font-size:.68rem;font-weight:500;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--blue-l);margin-bottom:1rem;
 }
-.hero-badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.68rem;font-weight:600;color:var(--teal-d);background:var(--teal-l);border:1px solid rgba(16,185,129,.25);padding:4px 12px;border-radius:20px;margin-bottom:.9rem}
-.hero-badge::before{content:'';width:6px;height:6px;background:var(--teal);border-radius:50%}
-.hero-h1{font-family:var(--mono);font-size:clamp(1.6rem,6vw,3.2rem);font-weight:700;color:var(--g900);line-height:1.1;letter-spacing:-.03em;margin-bottom:.5rem}
-.hero-h1 em{color:var(--blue);font-style:normal}
-.hero-sub{font-size:clamp(.8rem,2.5vw,.95rem);color:var(--g500);font-weight:300;max-width:380px;margin:.3rem auto 1.75rem;line-height:1.6}
+.eyebrow::before{content:'';width:22px;height:1.5px;background:currentColor;border-radius:2px}
+.sec-dk .eyebrow{color:#60A5FA}
+.sec-dk .eyebrow::before{background:#60A5FA}
 
-/* Hero pipeline — responsive */
-.hero-pipeline{
-  display:flex;align-items:stretch;
-  width:100%;max-width:900px;margin:0 auto;
+.sec-h{
+  font-family:var(--f-hd);
+  font-size:clamp(1.9rem,3.2vw,2.65rem);
+  font-weight:800;line-height:1.15;
+  letter-spacing:-.03em;color:var(--text);
+  margin-bottom:.65rem;
 }
-.hero-node{
-  flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
-  padding:.9rem .5rem;background:white;border:1.5px solid var(--g200);
-  cursor:pointer;transition:all .22s;position:relative;overflow:hidden;text-align:center;
+.sec-dk .sec-h{color:#F1F5F9}
+.grad{
+  background:linear-gradient(135deg,var(--blue-l) 0%,var(--teal-l) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
-.hero-node:first-child{border-radius:12px 0 0 12px}
-.hero-node:last-child{border-radius:0 12px 12px 0}
-.hero-node::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;transition:background .2s}
-.hn0::before{background:var(--teal)}
-.hn1::before,.hn2::before{background:var(--blue)}
-.hn3::before{background:var(--teal)}
-.hn4::before{background:var(--indigo)}
-.hero-node:hover{background:var(--blue-ll);border-color:var(--blue);transform:translateY(-3px);box-shadow:0 6px 20px rgba(14,165,233,.14);z-index:1}
-.hero-node:hover::before{background:var(--blue)}
-.hero-node-badge{font-family:var(--mono);font-size:clamp(.48rem,.9vw,.6rem);font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 6px;border-radius:4px;white-space:nowrap}
-.hn0 .hero-node-badge{background:var(--teal-l);color:var(--teal-d)}
-.hn1 .hero-node-badge,.hn2 .hero-node-badge{background:var(--blue-l);color:var(--blue-d)}
-.hn3 .hero-node-badge{background:var(--teal-l);color:var(--teal-d)}
-.hn4 .hero-node-badge{background:var(--indigo-l);color:var(--indigo)}
-.hero-node:hover .hero-node-badge{background:var(--blue-l);color:var(--blue-d)}
-.hero-node-name{font-family:var(--mono);font-size:clamp(.7rem,1.5vw,.95rem);font-weight:700;color:var(--g900)}
-.hero-node-file{font-family:var(--mono);font-size:clamp(.5rem,1vw,.62rem);color:var(--g300);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-.hero-conn{flex-shrink:1;width:20px;min-width:6px;align-self:center;position:relative;height:2px;background:var(--g200);overflow:hidden}
-.hero-conn-dot{position:absolute;top:-3px;left:-7px;width:7px;height:7px;border-radius:50%;background:var(--blue);animation:hcd 1.4s linear infinite}
-@keyframes hcd{0%{left:-7px;opacity:1}90%{opacity:1}100%{left:calc(100% + 7px);opacity:0}}
+.sec-dk .grad{background:linear-gradient(135deg,#60A5FA 0%,#34D399 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 
-/* ══════════════════════════
+.sec-p{font-size:.97rem;color:var(--text3);max-width:530px;line-height:1.72;margin-bottom:3rem}
+.sec-dk .sec-p{color:rgba(148,163,184,.75)}
+
+/* ============================================================
    ABOUT
-══════════════════════════ */
-.about-layout{display:grid;grid-template-columns:270px 1fr;gap:1.5rem;align-items:start}
-.profile-card{background:white;border:1px solid var(--g200);border-radius:13px;padding:1.4rem;position:relative;overflow:hidden}
-.profile-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--teal),var(--blue))}
-.avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--blue-l),var(--teal-l));display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:1.25rem;font-weight:700;color:var(--blue-d);border:2.5px solid var(--blue-l);margin-bottom:.8rem}
-.profile-name{font-family:var(--mono);font-size:1rem;font-weight:700;color:var(--g900);margin-bottom:.12rem}
-.profile-role{font-size:.8rem;color:var(--blue);font-weight:500;margin-bottom:.6rem}
-.profile-bio{font-size:.8rem;color:var(--g600);line-height:1.75;margin-bottom:1rem}
-.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;border-top:1px solid var(--g100);padding-top:.85rem}
-.stat{text-align:center}
-.stat-n{font-family:var(--mono);font-size:1.25rem;font-weight:700;color:var(--g900)}
-.stat-l{font-size:.58rem;color:var(--g400);text-transform:uppercase;letter-spacing:.07em}
-.log-entry{font-family:var(--mono);font-size:.7rem;color:var(--g600);padding:5px 0;border-bottom:1px solid var(--g100);display:flex;gap:8px;flex-wrap:wrap}
-.log-entry:last-child{border-bottom:none}
-.log-ts{color:var(--teal-d);flex-shrink:0}
-.log-key{color:var(--blue-d);margin-right:3px}
+   ============================================================ */
+.about-stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border:1px solid var(--border);border-radius:16px;
+  overflow:hidden;background:var(--card);
+  margin-bottom:2.75rem;box-shadow:var(--sh);
+}
+.as{
+  padding:1.75rem 1.5rem;border-right:1px solid var(--border);
+  position:relative;transition:background .2s;
+}
+.as:last-child{border-right:none}
+.as:hover{background:var(--bg2)}
+.as::after{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.as1::after{background:linear-gradient(90deg,var(--blue),var(--blue-l))}
+.as2::after{background:linear-gradient(90deg,var(--teal),var(--teal-l))}
+.as3::after{background:linear-gradient(90deg,var(--violet),var(--violet-l))}
+.as4::after{background:linear-gradient(90deg,var(--amber),var(--amber-l))}
+.as-n{font-family:var(--f-hd);font-size:2.2rem;font-weight:800;color:var(--text);line-height:1;letter-spacing:-.04em;margin-bottom:.3rem}
+.as-l{font-size:.68rem;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em}
 
-/* ══════════════════════════
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start}
+.about-bio{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem;box-shadow:var(--sh)}
+.bio-lbl{font-family:var(--f-mo);font-size:.63rem;font-weight:500;color:var(--text4);text-transform:uppercase;letter-spacing:.12em;margin-bottom:1rem}
+.bio-txt p{font-size:.93rem;color:var(--text2);line-height:1.85}
+.bio-txt p+p{margin-top:.85rem}
+.bio-txt strong{color:var(--text);font-weight:600}
+
+.about-info{display:flex;flex-direction:column;gap:.7rem}
+.dc{
+  display:flex;align-items:center;gap:1rem;
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:1rem 1.2rem;box-shadow:var(--sh);
+  transition:border-color .2s,box-shadow .2s;
+}
+.dc:hover{border-color:var(--blue-bd);box-shadow:0 4px 20px rgba(37,99,235,.08)}
+.dc-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.dc-lbl{font-size:.63rem;font-weight:600;color:var(--text4);text-transform:uppercase;letter-spacing:.09em;margin-bottom:.12rem}
+.dc-val{font-size:.87rem;font-weight:600;color:var(--text)}
+.dc-sub{font-size:.74rem;color:var(--text3);margin-top:.1rem}
+
+/* ============================================================
    SKILLS
-══════════════════════════ */
-.gridauto{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.85rem}
-.skill-node{background:white;border:1px solid var(--g200);border-radius:10px;padding:.9rem 1rem;transition:all .25s}
-.skill-node:hover{border-color:var(--blue);box-shadow:0 0 0 3px rgba(14,165,233,.07),0 3px 12px rgba(0,0,0,.07);transform:translateY(-2px)}
-.skill-node-head{display:flex;align-items:center;gap:8px;margin-bottom:.7rem}
-.skill-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
-.skill-node-name{font-family:var(--mono);font-size:.75rem;font-weight:700;color:var(--g900)}
-.skill-node-type{font-size:.62rem;color:var(--g400)}
+   ============================================================ */
+.skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.sk-card{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;padding:1.5rem;
+  transition:border-color .25s,background .25s,transform .25s;
+}
+.sk-card:hover{border-color:rgba(255,255,255,.16);background:rgba(255,255,255,.06);transform:translateY(-2px)}
+.sk-icon{font-size:1.5rem;margin-bottom:.75rem}
+.sk-title{font-family:var(--f-hd);font-size:.92rem;font-weight:700;color:#fff;margin-bottom:.35rem}
+.sk-desc{font-size:.77rem;color:rgba(148,163,184,.6);line-height:1.6;margin-bottom:1rem}
+.sk-chips{display:flex;flex-wrap:wrap;gap:.4rem}
+.chip{
+  font-size:.71rem;font-weight:600;padding:4px 10px;
+  border-radius:6px;border:1px solid;transition:transform .15s;
+}
+.chip:hover{transform:translateY(-1px)}
+.ch-b{color:#93C5FD;background:rgba(37,99,235,.15);border-color:rgba(37,99,235,.3)}
+.ch-t{color:#5EEAD4;background:rgba(13,148,136,.15);border-color:rgba(13,148,136,.3)}
+.ch-v{color:#C4B5FD;background:rgba(124,58,237,.15);border-color:rgba(124,58,237,.3)}
+.ch-a{color:#FCD34D;background:rgba(217,119,6,.15);border-color:rgba(217,119,6,.3)}
+.ch-s{color:#94A3B8;background:rgba(100,116,139,.15);border-color:rgba(100,116,139,.3)}
 
-/* ══════════════════════════
+/* ============================================================
    PROJECTS
-══════════════════════════ */
-.projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
-.proj-card{background:white;border:1px solid var(--g200);border-radius:12px;overflow:hidden;transition:all .3s}
-.proj-card:hover{border-color:rgba(14,165,233,.4);box-shadow:0 0 0 3px rgba(14,165,233,.06),0 8px 24px rgba(0,0,0,.09);transform:translateY(-3px)}
-.proj-pipe{display:flex;align-items:center;gap:4px;padding:.8rem .9rem .45rem;font-family:var(--mono);font-size:.6rem;font-weight:600;flex-wrap:wrap;row-gap:4px}
-.pipe-s{padding:2px 7px;border-radius:4px}
-.pipe-a{color:var(--g300);font-size:.65rem}
-.proj-body{padding:.55rem .9rem .9rem}
-.proj-name{font-family:var(--mono);font-size:.84rem;font-weight:700;color:var(--g900);margin-bottom:.25rem}
-.proj-desc{font-size:.78rem;color:var(--g500);line-height:1.6;margin-bottom:.75rem}
-.proj-metrics{display:flex;gap:10px;border-top:1px solid var(--g100);padding-top:.6rem;align-items:flex-end;flex-wrap:wrap}
-.pm{display:flex;flex-direction:column}
-.pm-v{font-family:var(--mono);font-size:.76rem;font-weight:700;color:var(--g900)}
-.pm-l{font-size:.56rem;color:var(--g400);text-transform:uppercase;letter-spacing:.05em}
-.proj-status{font-family:var(--mono);font-size:.58rem;font-weight:600;padding:2px 9px;border-radius:12px;margin-left:auto}
-.s-live{background:#DCFCE7;color:#166534}
-.s-wip{background:#FEF9C3;color:#854D0E}
-.proj-gh{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:.62rem;font-weight:600;color:var(--blue-d);text-decoration:none;padding:3px 9px;border:1px solid var(--blue-l);border-radius:5px;background:var(--blue-ll);transition:all .2s;margin-top:.55rem}
-.proj-gh:hover{background:var(--blue-l);border-color:var(--blue)}
+   ============================================================ */
+.proj-list{display:flex;flex-direction:column;gap:1.25rem}
+.proj-card{
+  display:grid;grid-template-columns:260px 1fr;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:20px;overflow:hidden;box-shadow:var(--sh);
+  transition:border-color .25s,box-shadow .25s,transform .25s;
+}
+.proj-card:hover{border-color:var(--blue-bd);box-shadow:var(--sh-lg);transform:translateY(-3px)}
 
-/* ══════════════════════════
+.pv{
+  padding:2rem 1.75rem;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:space-between;
+}
+.pv-teal  {background:linear-gradient(145deg,#0D9488,#0F766E)}
+.pv-blue  {background:linear-gradient(145deg,#2563EB,#1D4ED8)}
+.pv-violet{background:linear-gradient(145deg,#7C3AED,#6D28D9)}
+.pv-shine{
+  position:absolute;top:0;right:0;width:70%;height:100%;
+  background:linear-gradient(135deg,rgba(255,255,255,.12) 0%,transparent 55%);
+  pointer-events:none;
+}
+.pv-lbl{font-family:var(--f-mo);font-size:.58rem;font-weight:500;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase}
+.pv-title{font-family:var(--f-hd);font-size:1rem;font-weight:700;color:#fff;margin-top:.35rem;line-height:1.3}
+.pv-chart{margin-top:auto;padding-top:1rem}
+
+.proj-body{padding:1.75rem;display:flex;flex-direction:column;gap:1rem}
+.proj-meta{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.badge-done{
+  font-size:.6rem;font-weight:700;padding:3px 10px;border-radius:20px;
+  background:rgba(34,197,94,.1);color:#4ADE80;border:1px solid rgba(34,197,94,.2);
+}
+[data-theme="light"] .badge-done{background:#DCFCE7;color:#16A34A;border-color:#BBF7D0}
+.tool-tag{
+  font-size:.6rem;font-weight:600;padding:3px 9px;border-radius:6px;
+  background:var(--bg2);border:1px solid var(--border);color:var(--text2);
+}
+.prob-lbl{font-size:.63rem;font-weight:700;color:var(--text4);text-transform:uppercase;letter-spacing:.09em;margin-bottom:.28rem}
+.proj-desc{font-size:.86rem;color:var(--text2);line-height:1.75}
+.proj-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem}
+.pk{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:.62rem .72rem}
+.pk-v{font-family:var(--f-hd);font-size:.82rem;font-weight:700;color:var(--text);margin-bottom:.14rem}
+.pk-l{font-size:.58rem;color:var(--text4);text-transform:uppercase;letter-spacing:.05em}
+.proj-ft{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem}
+.gh-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:.77rem;font-weight:600;
+  color:var(--blue-l);background:var(--blue-bg);
+  border:1px solid var(--blue-bd);border-radius:8px;
+  padding:6px 14px;transition:all .15s;
+}
+.gh-btn:hover{background:rgba(37,99,235,.16);border-color:rgba(37,99,235,.4);transform:translateY(-1px)}
+
+/* ============================================================
    EXPERIENCE
-══════════════════════════ */
-.exp-layout{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;align-items:start}
-.timeline{position:relative;padding-left:1.6rem}
-.timeline::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:1.5px;background:linear-gradient(to bottom,var(--blue),var(--teal) 70%,var(--g200))}
-.t-item{position:relative;margin-bottom:1.1rem}
-.t-dot{position:absolute;left:-1.97rem;top:.22rem;width:13px;height:13px;border-radius:50%;background:white;border:2px solid var(--blue);display:flex;align-items:center;justify-content:center}
-.t-dot::after{content:'';width:5px;height:5px;border-radius:50%;background:var(--blue)}
-.t-card{background:white;border:1px solid var(--g200);border-radius:10px;padding:.9rem 1.1rem;transition:all .25s}
-.t-card:hover{border-color:rgba(14,165,233,.3);box-shadow:0 3px 12px rgba(0,0,0,.07)}
-.t-head{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:5px;margin-bottom:.18rem}
-.t-title{font-family:var(--mono);font-size:.82rem;font-weight:700;color:var(--g900)}
-.t-company{font-size:.76rem;color:var(--blue);font-weight:500;margin-bottom:.15rem}
-.t-date{font-family:var(--mono);font-size:.6rem;background:var(--g100);color:var(--g500);padding:2px 8px;border-radius:5px;white-space:nowrap}
-.t-desc{font-size:.77rem;color:var(--g500);line-height:1.65}
-.t-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:.55rem}
-.edu-card{background:white;border:1px solid var(--g200);border-radius:12px;padding:1.1rem 1.25rem;position:relative;overflow:hidden}
-.edu-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--indigo),var(--blue))}
-.cert-item{display:flex;align-items:flex-start;gap:7px;padding:5px 0;border-bottom:1px solid var(--g100);font-size:.77rem;color:var(--g600)}
-.cert-item:last-child{border-bottom:none}
-.cert-dot{width:5px;height:5px;border-radius:50%;background:var(--blue);flex-shrink:0;margin-top:5px}
+   ============================================================ */
+.exp-layout{display:grid;grid-template-columns:3fr 2fr;gap:2.5rem;align-items:start}
+.exp-tl{display:flex;flex-direction:column;gap:1.5rem}
+.exp-item{display:grid;grid-template-columns:20px 1fr;gap:1.25rem}
+.exp-track{display:flex;flex-direction:column;align-items:center}
+.exp-node{
+  width:14px;height:14px;border-radius:50%;
+  border:2.5px solid var(--border2);background:var(--bg);
+  flex-shrink:0;margin-top:.4rem;position:relative;z-index:1;
+}
+.exp-node.now{border-color:var(--blue);background:var(--blue);box-shadow:0 0 0 4px rgba(37,99,235,.14)}
+.exp-line{flex:1;width:1.5px;background:var(--border2);margin:5px 0}
+.exp-item:last-child .exp-line{display:none}
+.exp-card{
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:1.4rem 1.5rem;box-shadow:var(--sh);
+  transition:border-color .2s,box-shadow .2s;
+}
+.exp-card:hover{border-color:var(--blue-bd);box-shadow:0 4px 20px rgba(37,99,235,.08)}
+.exp-period{
+  display:inline-block;
+  font-family:var(--f-mo);font-size:.63rem;font-weight:500;
+  color:var(--text3);background:var(--bg2);border:1px solid var(--border);
+  padding:3px 10px;border-radius:6px;margin-bottom:.55rem;
+}
+.exp-period.cur{color:var(--green);background:rgba(22,163,74,.07);border-color:rgba(22,163,74,.2)}
+.exp-title{font-family:var(--f-hd);font-size:1rem;font-weight:700;color:var(--text);margin-bottom:.14rem}
+.exp-co{font-size:.82rem;color:var(--blue-l);font-weight:500;margin-bottom:.85rem}
+.exp-bullets{display:flex;flex-direction:column;gap:.42rem;padding-left:1rem;border-left:2px solid var(--border2)}
+.exp-bullet{font-size:.83rem;color:var(--text2);line-height:1.65}
+.exp-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.85rem}
+.et{font-size:.6rem;font-weight:600;padding:3px 9px;border-radius:6px;background:var(--bg2);border:1px solid var(--border);color:var(--text3)}
 
-/* ══════════════════════════
+/* Education & Certs */
+.edu-card{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  overflow:hidden;box-shadow:var(--sh);margin-bottom:1.5rem;
+}
+.edu-hd{background:linear-gradient(135deg,var(--violet) 0%,#6D28D9 100%);padding:1.5rem}
+.edu-deg{font-family:var(--f-hd);font-size:1rem;font-weight:700;color:#fff;margin-bottom:.3rem}
+.edu-sch{font-size:.8rem;color:rgba(255,255,255,.68)}
+.edu-body{padding:1.25rem 1.5rem;display:flex;flex-direction:column;gap:.8rem}
+.edu-row{display:flex;justify-content:space-between;align-items:center}
+.edu-lbl{font-size:.7rem;color:var(--text4);font-weight:500}
+.edu-val{font-size:.85rem;font-weight:700;color:var(--text)}
+.edu-gpa{font-family:var(--f-hd);font-size:1.25rem;font-weight:800;color:var(--green);letter-spacing:-.03em}
+.gpa-max{font-size:.7rem;color:var(--text3);font-weight:400}
+
+.certs-lbl{font-size:.63rem;font-weight:700;color:var(--text4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem}
+.cert-list{display:flex;flex-direction:column;gap:.5rem}
+.cert-row{
+  display:flex;align-items:center;gap:.85rem;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:.62rem 1rem;
+  font-size:.79rem;color:var(--text2);
+  box-shadow:var(--sh);transition:all .15s;
+}
+.cert-row:hover{border-color:var(--blue-bd);background:var(--blue-bg)}
+.cert-icon{
+  width:24px;height:24px;border-radius:6px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--blue),var(--teal));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--f-hd);font-size:.6rem;font-weight:700;color:#fff;
+}
+
+/* ============================================================
    CONTACT
-══════════════════════════ */
-.contact-wrap{display:flex;align-items:center;justify-content:center;flex:1;padding-top:.5rem}
-.contact-card{background:white;border:1px solid var(--g200);border-radius:18px;padding:2rem;max-width:480px;width:100%;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.08)}
-.contact-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--teal),var(--indigo))}
-.contact-title{font-family:var(--mono);font-size:1.35rem;font-weight:700;color:var(--g900);margin-bottom:.2rem}
-.contact-sub{font-size:.83rem;color:var(--g500);margin-bottom:1.2rem}
-.clinks{display:flex;flex-direction:column;gap:7px}
-.clink{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--g50);border:1px solid var(--g200);border-radius:9px;text-decoration:none;color:var(--g700);font-size:.78rem;transition:all .2s;font-family:var(--mono);word-break:break-all}
-.clink:hover{background:var(--blue-l);border-color:var(--blue);color:var(--blue-d);transform:translateX(4px)}
-.clink-icon{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0}
-
-/* ══════════════════════════
-   STATUS BAR
-══════════════════════════ */
-#status-bar{
-  flex-shrink:0;height:28px;background:var(--g50);border-top:1px solid var(--g200);
-  display:flex;align-items:center;padding:0 1rem;gap:1rem;
-  font-family:var(--mono);font-size:.58rem;color:var(--g400);overflow:hidden;
+   ============================================================ */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;max-width:680px}
+.c-card{
+  display:flex;align-items:center;gap:1rem;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;padding:1.1rem 1.25rem;transition:all .2s;
 }
-.sb-item{display:flex;align-items:center;gap:4px;white-space:nowrap;flex-shrink:0}
-.sb-dot{width:5px;height:5px;border-radius:50%}
-.sb-green{background:var(--teal)}
-.sb-blue{background:var(--blue)}
-.sb-sep{flex:1}
-.sb-hide{display:none}
+.c-card:hover{background:rgba(37,99,235,.12);border-color:rgba(37,99,235,.35);transform:translateY(-2px)}
+.c-icon{
+  width:42px;height:42px;border-radius:11px;
+  background:rgba(255,255,255,.07);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;
+  transition:background .2s;
+}
+.c-card:hover .c-icon{background:rgba(37,99,235,.2)}
+.c-lbl{font-size:.6rem;font-weight:600;color:rgba(148,163,184,.5);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.18rem}
+.c-val{font-size:.84rem;font-weight:600;color:rgba(203,213,225,.88);transition:color .2s}
+.c-card:hover .c-val{color:#fff}
 
-/* ══════════════════════════
-   RESPONSIVE — TABLET
-══════════════════════════ */
-@media(max-width:900px){
-  :root{--bar-h:72px}
-  .pipe-logo-sub{display:none}
-  .about-layout{grid-template-columns:1fr}
+/* ============================================================
+   BACK TO TOP
+   ============================================================ */
+#back-top{
+  position:fixed;bottom:2rem;right:2rem;
+  width:44px;height:44px;border-radius:12px;
+  background:var(--blue);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 16px rgba(37,99,235,.4);
+  opacity:0;transform:translateY(12px);pointer-events:none;
+  transition:opacity .3s,transform .3s,background .15s,box-shadow .15s;
+  z-index:800;cursor:pointer;border:none;
+}
+#back-top.show{opacity:1;transform:none;pointer-events:all}
+#back-top:hover{background:var(--blue-l);box-shadow:0 8px 24px rgba(37,99,235,.5);transform:translateY(-2px)}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+#foot{
+  background:var(--dk2);border-top:1px solid rgba(255,255,255,.06);
+  padding:1.5rem var(--px);
+}
+.foot-in{max-width:var(--mw);margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.foot-l{font-size:.7rem;color:rgba(148,163,184,.4)}
+.foot-l strong{color:rgba(148,163,184,.7)}
+.foot-r{font-size:.65rem;color:rgba(148,163,184,.28)}
+
+/* ============================================================
+   SCROLL REVEAL
+   ============================================================ */
+.reveal{
+  opacity:0;transform:translateY(26px);
+  transition:opacity .7s var(--ease),transform .7s var(--ease);
+}
+.reveal.in{opacity:1;transform:none}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+.d4{transition-delay:.4s}.d5{transition-delay:.5s}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media(max-width:1100px){
+  :root{--px:2rem}
+  .hero-in{grid-template-columns:1fr}
+  .hero-right{display:none}
+  .skills-grid{grid-template-columns:1fr 1fr}
   .exp-layout{grid-template-columns:1fr}
-  .hero-node-file{display:none}
 }
-
-/* ══════════════════════════
-   RESPONSIVE — MOBILE
-══════════════════════════ */
-@media(max-width:600px){
-  :root{--bar-h:56px}
-  body{overflow:hidden}
-
-  /* Pipeline bar */
-  #pipeline-bar{padding:0 .6rem;gap:0;height:var(--bar-h)}
-  .pipe-logo{margin-right:.5rem}
-  .pipe-logo span:not(.pipe-logo-dot){font-size:.6rem}
-  .pipe-conn{min-width:3px;width:6px;flex-shrink:1}
-
-  /* Nodes: single-line, name only */
-  .pipe-node{
-    padding:0 7px;height:38px;border-radius:7px;gap:1px;
-    justify-content:center;align-items:center;flex-direction:column;
-  }
-  .pn-top{display:none}           /* hide badge row entirely */
-  .pn-file{display:none}          /* hide file path */
-  .pn-name{font-size:.68rem;text-align:center;width:100%}
-
-  /* Show a tiny dot under active node name instead of badge */
-  .pipe-node.active::after{
-    content:'';display:block;width:4px;height:4px;border-radius:50%;
-    background:var(--blue);margin:0 auto;
-  }
-  .pipe-node.visited:not(.active)::after{
-    content:'✓';display:block;font-size:.5rem;color:var(--teal-d);text-align:center;
-    line-height:1;margin-top:1px;
-  }
-
-  /* Screens */
-  .screen{padding:1rem}
-  .stage-header{margin-bottom:1rem}
-  .stage-title{font-size:1.35rem}
-  .stage-subtitle{font-size:.8rem}
-  .stage-nav{gap:6px}
-  .nav-btn{font-size:.65rem;padding:6px 11px}
-
-  /* Hero */
-  .hero-h1{font-size:clamp(1.4rem,7vw,2rem)}
-  .hero-sub{font-size:.78rem}
-
-  /* Hero pipeline: vertical stack */
-  .hero-pipeline{flex-direction:column;gap:0;max-width:320px}
-  .hero-node{flex-direction:row;justify-content:flex-start;align-items:center;gap:8px;padding:.75rem 1rem;border-radius:0;border-bottom:none}
-  .hero-node:first-child{border-radius:10px 10px 0 0}
-  .hero-node:last-child{border-radius:0 0 10px 10px;border-bottom:1.5px solid var(--g200)}
-  .hero-node::before{width:3px;height:100%;top:0;right:auto;bottom:0;border-radius:0}
-  .hero-node-file{display:none}
-  .hero-conn{width:100%;height:1px;min-width:100%}
-  .hero-conn-dot{top:-3px;animation:none}
-
-  /* About */
-  .about-layout{grid-template-columns:1fr;gap:1rem}
-  #screen-1 [style*="grid-template-columns:auto 1fr"]{grid-template-columns:1fr !important}
-  #screen-1 [style*="grid-template-columns:repeat(3,1fr)"]{grid-template-columns:1fr !important}
-
-  /* Skills */
-  .gridauto{grid-template-columns:1fr}
-
-  /* Projects */
-  .projects-grid{grid-template-columns:1fr}
-
-  /* Experience */
-  .exp-layout{grid-template-columns:1fr;gap:1rem}
-
-  /* Status bar */
-  #status-bar{gap:.6rem}
-  .sb-keys{display:none}
+@media(max-width:900px){
+  :root{--py:4rem}
+  .nav-links,.nav-cta{display:none}
+  .ham{display:flex}
+  .about-stats{grid-template-columns:1fr 1fr}
+  .about-grid{grid-template-columns:1fr}
+  .proj-card{grid-template-columns:1fr}
+  .pv{min-height:160px}
 }
-
-@media(max-width:380px){
-  .pipe-logo{display:none}
-  .pipe-node{padding:0 5px}
-  .pn-name{font-size:.6rem}
+@media(max-width:640px){
+  :root{--px:1.25rem;--py:3.5rem}
+  .hero-h{font-size:2.75rem}
+  .hero-stats{flex-wrap:wrap}
+  .about-stats{grid-template-columns:1fr 1fr}
+  .skills-grid{grid-template-columns:1fr}
+  .proj-kpis{grid-template-columns:1fr 1fr}
+  .contact-grid{grid-template-columns:1fr}
+  .foot-in{flex-direction:column;gap:.5rem;text-align:center}
+}
+@media(max-width:420px){
+  .hero-h{font-size:2.25rem}
 }
 </style>
 </head>
 <body>
 
-<!-- PIPELINE BAR -->
-<div id="pipeline-bar">
-  <div class="pipe-logo">
-    <div class="pipe-logo-top">
-      <div class="pipe-logo-dot"></div>
-      <span>aseel.pipeline</span>
+<!-- Scroll progress -->
+<div id="scroll-bar"></div>
+
+<!-- ============================================================
+     NAVBAR
+     ============================================================ -->
+<nav id="nav">
+  <div class="nav-in">
+    <a href="#hero" class="nav-logo">
+      <div class="nav-mark">AA</div>
+      <span class="nav-name">Aseel Alzahrani</span>
+    </a>
+
+    <div class="nav-links">
+      <a href="#about"      class="nav-a" data-s="about">About</a>
+      <a href="#skills"     class="nav-a" data-s="skills">Skills</a>
+      <a href="#projects"   class="nav-a" data-s="projects">Projects</a>
+      <a href="#experience" class="nav-a" data-s="experience">Experience</a>
+      <a href="#contact"    class="nav-a" data-s="contact">Contact</a>
     </div>
-    <div class="pipe-logo-sub">← → to navigate</div>
+
+    <div class="nav-end">
+      <button class="theme-btn" id="theme-btn" aria-label="Toggle theme">
+        <svg id="ico-moon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg id="ico-sun"  xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+      <a href="mailto:alzahraniaseel0@gmail.com" class="nav-cta">Get in Touch</a>
+      <button class="ham" id="ham" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </div>
-  <div class="pipe-track" id="pipe-track"></div>
+</nav>
+
+<!-- Mobile Menu -->
+<div id="mob-menu">
+  <a href="#about"      class="mob-a" data-mob>About</a>
+  <a href="#skills"     class="mob-a" data-mob>Skills</a>
+  <a href="#projects"   class="mob-a" data-mob>Projects</a>
+  <a href="#experience" class="mob-a" data-mob>Experience</a>
+  <a href="#contact"    class="mob-a" data-mob>Contact</a>
+  <a href="mailto:alzahraniaseel0@gmail.com" class="mob-cta">Get in Touch ↗</a>
 </div>
 
-<div id="stage">
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section id="hero">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-vignette"></div>
 
-  <!-- SCREEN 0: HERO -->
-  <div class="screen" id="screen-0">
-    <div class="hero-badge">data analyst · riyadh, KSA</div>
-    <h1 class="hero-h1">Aseel <em>Alzahrani</em></h1>
-    <p class="hero-sub">Click any stage in the pipeline to explore my portfolio, or use ← → arrow keys.</p>
+  <div class="hero-in">
 
-    <div class="hero-pipeline">
-      <div class="hero-node hn0" onclick="goTo(1)">
-        <span class="hero-node-badge">source</span>
-        <span class="hero-node-name">About</span>
-        <span class="hero-node-file">profile.json</span>
+    <!-- Left -->
+    <div class="hero-left">
+      <div class="hero-pill">
+        <span class="pill-dot"></span>
+        Data Analyst · Open to Opportunities
       </div>
-      <div class="hero-conn"><div class="hero-conn-dot"></div></div>
-      <div class="hero-node hn1" onclick="goTo(2)">
-        <span class="hero-node-badge">ingest</span>
-        <span class="hero-node-name">Skills</span>
-        <span class="hero-node-file">stack.yml</span>
+
+      <h1 class="hero-h">
+        Aseel<br>
+        <span class="accent">Alzahrani</span>
+      </h1>
+
+      <p class="hero-p">
+        I turn <strong>raw, scattered data</strong> into clear dashboards, automated pipelines,
+        and cloud data systems — so teams make faster, better decisions.
+      </p>
+
+      <div class="hero-stats">
+        <div class="hs"><span class="hs-n">2+</span><span class="hs-l">Years Exp.</span></div>
+        <div class="hs"><span class="hs-n">3</span><span class="hs-l">Projects</span></div>
+        <div class="hs"><span class="hs-n">4.72</span><span class="hs-l">GPA</span></div>
+        <div class="hs"><span class="hs-n">6</span><span class="hs-l">Certs</span></div>
       </div>
-      <div class="hero-conn"><div class="hero-conn-dot" style="animation-delay:-.35s"></div></div>
-      <div class="hero-node hn2" onclick="goTo(3)">
-        <span class="hero-node-badge">transform</span>
-        <span class="hero-node-name">Projects</span>
-        <span class="hero-node-file">repos/</span>
+
+      <div class="hero-btns">
+        <a href="#projects" class="btn-p">View My Work ↓</a>
+        <a href="#contact"  class="btn-g">Get in Touch</a>
       </div>
-      <div class="hero-conn"><div class="hero-conn-dot" style="animation-delay:-.7s"></div></div>
-      <div class="hero-node hn3" onclick="goTo(4)">
-        <span class="hero-node-badge">model</span>
-        <span class="hero-node-name">Experience</span>
-        <span class="hero-node-file">career.sql</span>
+    </div>
+
+    <!-- Right: BI dashboard card -->
+    <div class="hero-right">
+      <div class="card-glow"></div>
+      <div class="bi-card">
+        <div class="bi-bar"></div>
+        <div class="bi-tb">
+          <div class="bi-dots">
+            <span class="bd bd-r"></span>
+            <span class="bd bd-y"></span>
+            <span class="bd bd-g"></span>
+          </div>
+          <span class="bi-tb-txt">Sales Performance · Power BI</span>
+          <span class="bi-live">LIVE</span>
+        </div>
+
+        <div class="bi-body">
+          <!-- KPIs -->
+          <div class="bi-kpis">
+            <div class="bi-kpi kpi-b">
+              <div class="bi-lbl">Revenue</div>
+              <div class="bi-val">$2.4M</div>
+              <div class="bi-delta up">↑ 12.3% vs last month</div>
+            </div>
+            <div class="bi-kpi kpi-t">
+              <div class="bi-lbl">Orders</div>
+              <div class="bi-val">1,847</div>
+              <div class="bi-delta up">↑ 8.7%</div>
+            </div>
+            <div class="bi-kpi kpi-v">
+              <div class="bi-lbl">Avg Order</div>
+              <div class="bi-val">$1,299</div>
+              <div class="bi-delta wn">↓ 2.1%</div>
+            </div>
+          </div>
+
+          <!-- Bar chart -->
+          <div class="bi-chart">
+            <div class="bi-ch-hd">
+              <span class="bi-ch-lbl">Monthly Sales — Q1–Q2</span>
+              <div class="bi-leg">
+                <span class="bi-li"><span class="bi-li-dot" style="background:#2563EB"></span>Target</span>
+                <span class="bi-li"><span class="bi-li-dot" style="background:#0D9488"></span>Actual</span>
+              </div>
+            </div>
+            <svg class="bi-svg" viewBox="0 0 380 78" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+              <line x1="0" y1="20" x2="380" y2="20" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
+              <line x1="0" y1="40" x2="380" y2="40" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
+              <line x1="0" y1="60" x2="380" y2="60" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
+              <!-- Target bars -->
+              <rect class="bi-bar-anim ba1"  x="8"   y="28" width="26" height="44" rx="3" fill="rgba(37,99,235,.22)"/>
+              <rect class="bi-bar-anim ba2"  x="70"  y="22" width="26" height="50" rx="3" fill="rgba(37,99,235,.22)"/>
+              <rect class="bi-bar-anim ba3"  x="132" y="18" width="26" height="54" rx="3" fill="rgba(37,99,235,.22)"/>
+              <rect class="bi-bar-anim ba4"  x="194" y="12" width="26" height="60" rx="3" fill="rgba(37,99,235,.22)"/>
+              <rect class="bi-bar-anim ba5"  x="256" y="8"  width="26" height="64" rx="3" fill="rgba(37,99,235,.22)"/>
+              <rect class="bi-bar-anim ba6"  x="318" y="4"  width="26" height="68" rx="3" fill="rgba(37,99,235,.22)"/>
+              <!-- Actual bars -->
+              <rect class="bi-bar-anim ba7"  x="36"  y="34" width="26" height="38" rx="3" fill="#0D9488"/>
+              <rect class="bi-bar-anim ba8"  x="98"  y="26" width="26" height="46" rx="3" fill="#0D9488"/>
+              <rect class="bi-bar-anim ba9"  x="160" y="20" width="26" height="52" rx="3" fill="#0D9488"/>
+              <rect class="bi-bar-anim ba10" x="222" y="10" width="26" height="62" rx="3" fill="#2563EB"/>
+              <rect class="bi-bar-anim ba11" x="284" y="6"  width="26" height="66" rx="3" fill="#2563EB"/>
+              <rect class="bi-bar-anim ba12" x="346" y="2"  width="26" height="70" rx="3" fill="#2563EB"/>
+            </svg>
+            <div class="bi-labs">
+              <span>Jan</span><span>Feb</span><span>Mar</span>
+              <span>Apr</span><span>May</span><span>Jun</span>
+            </div>
+          </div>
+
+          <!-- Bottom panels -->
+          <div class="bi-btm">
+            <div class="bi-pnl">
+              <div class="bi-pnl-lbl">Revenue Trend</div>
+              <svg class="spark-svg" viewBox="0 0 140 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="sg" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#0D9488" stop-opacity=".4"/>
+                    <stop offset="100%" stop-color="#0D9488" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <path d="M4,22 L22,17 L40,19 L58,12 L76,9 L94,6 L112,4 L130,2" stroke="#0D9488" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4,22 L22,17 L40,19 L58,12 L76,9 L94,6 L112,4 L130,2 L130,28 L4,28 Z" fill="url(#sg)"/>
+                <circle cx="130" cy="2" r="3" fill="#0D9488"/>
+              </svg>
+            </div>
+            <div class="bi-pnl">
+              <div class="bi-pnl-lbl">Top Categories</div>
+              <div class="bi-row"><span class="bi-rn">Beverages</span><span class="bi-rv g">$820K</span></div>
+              <div class="bi-row"><span class="bi-rn">Snacks</span><span class="bi-rv b">$540K</span></div>
+              <div class="bi-row"><span class="bi-rn">Dairy</span><span class="bi-rv y">$320K</span></div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="hero-conn"><div class="hero-conn-dot" style="animation-delay:-1.05s"></div></div>
-      <div class="hero-node hn4" onclick="goTo(5)">
-        <span class="hero-node-badge">serve</span>
-        <span class="hero-node-name">Contact</span>
-        <span class="hero-node-file">api/connect</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     ABOUT
+     ============================================================ -->
+<section id="about">
+  <div class="sec-in">
+    <div class="eyebrow reveal">About</div>
+    <h2 class="sec-h reveal d1">Who I <span class="grad">Am</span></h2>
+    <p class="sec-p reveal d2">Data analyst based in Riyadh, specializing in dashboards, automated pipelines, and cloud data platforms.</p>
+
+    <div class="about-stats reveal d1">
+      <div class="as as1"><div class="as-n">2+</div><div class="as-l">Years of Experience</div></div>
+      <div class="as as2"><div class="as-n">3</div><div class="as-l">Completed Projects</div></div>
+      <div class="as as3"><div class="as-n">4.72</div><div class="as-l">GPA / 5.0</div></div>
+      <div class="as as4"><div class="as-n">6</div><div class="as-l">Certifications</div></div>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-bio reveal d2">
+        <div class="bio-lbl">Summary</div>
+        <div class="bio-txt">
+          <p>I'm a Data Analyst based in <strong>Riyadh, Saudi Arabia</strong> with a background in Management Information Systems. My work lives at the intersection of data engineering, business intelligence, and automation.</p>
+          <p>Currently at <strong>Aujan Coca-Cola Beverage Company</strong>, I build the data systems that help sales teams track performance, identify trends, and close gaps — from the ETL pipeline that feeds the data warehouse to the Power BI dashboard that shows KPIs every morning.</p>
+        </div>
+      </div>
+
+      <div class="about-info">
+        <div class="dc reveal d2">
+          <div class="dc-icon" style="background:#EFF6FF">📍</div>
+          <div><div class="dc-lbl">Location</div><div class="dc-val">Riyadh, Saudi Arabia</div></div>
+        </div>
+        <div class="dc reveal d3">
+          <div class="dc-icon" style="background:#F0FDF4">🏢</div>
+          <div><div class="dc-lbl">Current Employer</div><div class="dc-val">Aujan Coca-Cola (ACCBC)</div><div class="dc-sub">Aug 2025 – Present</div></div>
+        </div>
+        <div class="dc reveal d4">
+          <div class="dc-icon" style="background:#FAF5FF">🎓</div>
+          <div><div class="dc-lbl">Education</div><div class="dc-val">BSc Management Information Systems</div><div class="dc-sub">University of Tabuk · GPA 4.72 / 5.0</div></div>
+        </div>
+        <div class="dc reveal d5">
+          <div class="dc-icon" style="background:#FFFBEB">📊</div>
+          <div><div class="dc-lbl">Focus Areas</div><div class="dc-val">Power BI · Data Warehousing · ETL Pipelines</div></div>
+        </div>
       </div>
     </div>
   </div>
+</section>
 
-  <!-- SCREEN 1: ABOUT -->
-  <div class="screen active" id="screen-1">
-    <div class="stage-header">
-      <div>
-        <div class="stage-layer">source · profile.json</div>
-        <h2 class="stage-title">About <span>Me</span></h2>
-        <p class="stage-subtitle">Who I am, what I do, and how I can add value.</p>
-      </div>
-      <div class="stage-nav">
-        <button class="nav-btn nav-btn-next" onclick="goTo(2)">Skills →</button>
-      </div>
-    </div>
-    <!-- Top: identity card + intro paragraph -->
-    <div style="display:grid;grid-template-columns:auto 1fr;gap:1.5rem;align-items:start;margin-bottom:1.25rem">
-      <!-- Identity card -->
-      <div style="background:white;border:1px solid var(--g200);border-radius:14px;padding:1.4rem 1.6rem;position:relative;overflow:hidden;min-width:220px;max-width:260px">
-        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--teal),var(--blue))"></div>
-        <div class="avatar">AA</div>
-        <div style="font-family:var(--mono);font-size:1rem;font-weight:700;color:var(--g900);margin-bottom:.15rem">Aseel Alzahrani</div>
-        <div style="font-size:.82rem;color:var(--blue);font-weight:500;margin-bottom:.9rem">Data Analyst</div>
-        <div style="display:flex;flex-direction:column;gap:6px">
-          <div style="display:flex;align-items:center;gap:7px;font-size:.78rem;color:var(--g600)">
-            <span style="font-size:.85rem">📍</span> Riyadh, Saudi Arabia
-          </div>
-          <div style="display:flex;align-items:center;gap:7px;font-size:.78rem;color:var(--g600)">
-            <span style="font-size:.85rem">🏢</span> Aujan Coca-Cola (ACCBC)
-          </div>
-          <div style="display:flex;align-items:center;gap:7px;font-size:.78rem;color:var(--g600)">
-            <span style="font-size:.85rem">🎓</span> MIS · University of Tabuk
-          </div>
-          <div style="display:flex;align-items:center;gap:7px;font-size:.78rem;color:var(--g600)">
-            <span style="font-size:.85rem">⭐</span> GPA 4.72 / 5.0
-          </div>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;border-top:1px solid var(--g100);padding-top:.9rem;margin-top:1rem">
-          <div style="text-align:center">
-            <div style="font-family:var(--mono);font-size:1.2rem;font-weight:700;color:var(--g900)">2+</div>
-            <div style="font-size:.58rem;color:var(--g400);text-transform:uppercase;letter-spacing:.06em">Years</div>
-          </div>
-          <div style="text-align:center">
-            <div style="font-family:var(--mono);font-size:1.2rem;font-weight:700;color:var(--g900)">3</div>
-            <div style="font-size:.58rem;color:var(--g400);text-transform:uppercase;letter-spacing:.06em">Projects</div>
-          </div>
-          <div style="text-align:center">
-            <div style="font-family:var(--mono);font-size:1.2rem;font-weight:700;color:var(--g900)">4.72</div>
-            <div style="font-size:.58rem;color:var(--g400);text-transform:uppercase;letter-spacing:.06em">GPA</div>
-          </div>
+<!-- ============================================================
+     SKILLS
+     ============================================================ -->
+<section id="skills" class="sec-dk">
+  <div class="sec-in">
+    <div class="eyebrow reveal">Skills</div>
+    <h2 class="sec-h reveal d1">My <span class="grad">Tech Stack</span></h2>
+    <p class="sec-p reveal d2">Tools and platforms I use across the full data lifecycle — from ingestion to insight.</p>
+
+    <div class="skills-grid">
+      <div class="sk-card reveal d1">
+        <div class="sk-icon">📊</div>
+        <div class="sk-title">Dashboards &amp; BI</div>
+        <div class="sk-desc">Interactive reports showing KPIs, trends, and decision-support visuals for managers.</div>
+        <div class="sk-chips">
+          <span class="chip ch-t">Power BI</span>
+          <span class="chip ch-t">DAX</span>
+          <span class="chip ch-t">Excel Dashboards</span>
+          <span class="chip ch-t">KPI Reports</span>
         </div>
       </div>
 
-      <!-- Intro + highlights -->
-      <div style="display:flex;flex-direction:column;gap:1rem">
-        <!-- Who I am -->
-        <div style="background:white;border:1px solid var(--g200);border-radius:12px;padding:1.25rem 1.4rem">
-          <div style="font-size:.7rem;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.6rem">Who I Am</div>
-          <p style="font-size:.88rem;color:var(--g700);line-height:1.8">
-            I'm a Data Analyst based in Riyadh with a background in Management Information Systems. I specialize in turning scattered, raw data into clear dashboards and reports that help teams make faster, better decisions. Currently, I work at <strong>Aujan Coca-Cola Beverage Company</strong>, where I build automated data pipelines, interactive Power BI dashboards, and internal tools used across the organization daily.
-          </p>
+      <div class="sk-card reveal d2">
+        <div class="sk-icon">🔄</div>
+        <div class="sk-title">ETL &amp; Data Processing</div>
+        <div class="sk-desc">Automated systems that pull data from multiple sources, clean it, and prepare it for analysis.</div>
+        <div class="sk-chips">
+          <span class="chip ch-b">Microsoft Fabric</span>
+          <span class="chip ch-b">Power Query</span>
+          <span class="chip ch-b">Power Automate</span>
+          <span class="chip ch-b">ETL Pipelines</span>
         </div>
+      </div>
 
-        <!-- What I do - 3 highlight cards -->
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.85rem">
-          <div style="background:var(--teal-l);border:1px solid rgba(16,185,129,.2);border-radius:10px;padding:1rem">
-            <div style="font-size:1.1rem;margin-bottom:.4rem">📊</div>
-            <div style="font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--teal-d);margin-bottom:.25rem">Data Insights</div>
-            <div style="font-size:.76rem;color:var(--g600);line-height:1.6">I build dashboards and reports that translate numbers into clear business stories.</div>
-          </div>
-          <div style="background:var(--blue-ll);border:1px solid rgba(14,165,233,.2);border-radius:10px;padding:1rem">
-            <div style="font-size:1.1rem;margin-bottom:.4rem">⚙️</div>
-            <div style="font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--blue-d);margin-bottom:.25rem">Automation</div>
-            <div style="font-size:.76rem;color:var(--g600);line-height:1.6">I automate repetitive reporting tasks so teams spend time on decisions, not spreadsheets.</div>
-          </div>
-          <div style="background:var(--indigo-l);border:1px solid rgba(99,102,241,.2);border-radius:10px;padding:1rem">
-            <div style="font-size:1.1rem;margin-bottom:.4rem">🏗️</div>
-            <div style="font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--indigo);margin-bottom:.25rem">Data Pipelines</div>
-            <div style="font-size:.76rem;color:var(--g600);line-height:1.6">I design systems that collect, clean, and organize data from multiple sources automatically.</div>
-          </div>
+      <div class="sk-card reveal d3">
+        <div class="sk-icon">🗄️</div>
+        <div class="sk-title">Databases &amp; Warehousing</div>
+        <div class="sk-desc">Cloud databases to store, model, and query large datasets at scale.</div>
+        <div class="sk-chips">
+          <span class="chip ch-v">Snowflake</span>
+          <span class="chip ch-v">Google BigQuery</span>
+          <span class="chip ch-v">SQL</span>
+          <span class="chip ch-v">Data Modeling</span>
+        </div>
+      </div>
+
+      <div class="sk-card reveal d2">
+        <div class="sk-icon">☁️</div>
+        <div class="sk-title">Cloud Platforms</div>
+        <div class="sk-desc">Deploy databases, data tools, and internal web portals on enterprise cloud infrastructure.</div>
+        <div class="sk-chips">
+          <span class="chip ch-a">Microsoft Azure</span>
+          <span class="chip ch-a">Google Cloud</span>
+          <span class="chip ch-a">Cloud Data Services</span>
+        </div>
+      </div>
+
+      <div class="sk-card reveal d3">
+        <div class="sk-icon">💻</div>
+        <div class="sk-title">Programming &amp; Automation</div>
+        <div class="sk-desc">Scripts that automate reports, process data, and reduce manual work across teams.</div>
+        <div class="sk-chips">
+          <span class="chip ch-s">Python</span>
+          <span class="chip ch-s">SQL</span>
+          <span class="chip ch-s">Data Pipelines</span>
+          <span class="chip ch-s">AI-assisted Dev</span>
+        </div>
+      </div>
+
+      <div class="sk-card reveal d4">
+        <div class="sk-icon">📈</div>
+        <div class="sk-title">Analytics &amp; Reporting</div>
+        <div class="sk-desc">End-to-end analytics workflows from raw data ingestion to executive reporting.</div>
+        <div class="sk-chips">
+          <span class="chip ch-t">Sales Analytics</span>
+          <span class="chip ch-t">Performance Tracking</span>
+          <span class="chip ch-t">Trend Analysis</span>
         </div>
       </div>
     </div>
   </div>
+</section>
 
-  <!-- SCREEN 2: SKILLS -->
-  <div class="screen" id="screen-2">
-    <div class="stage-header">
-      <div>
-        <div class="stage-layer">skills &amp; tools</div>
-        <h2 class="stage-title">What I <span>Work With</span></h2>
-        <p class="stage-subtitle">The tools and platforms I use to deliver results.</p>
-      </div>
-      <div class="stage-nav">
-        <button class="nav-btn nav-btn-back" onclick="goTo(1)">← About</button>
-        <button class="nav-btn nav-btn-next" onclick="goTo(3)">Projects →</button>
-      </div>
-    </div>
+<!-- ============================================================
+     PROJECTS
+     ============================================================ -->
+<section id="projects">
+  <div class="sec-in">
+    <div class="eyebrow reveal">Projects</div>
+    <h2 class="sec-h reveal d1">Selected <span class="grad">Work</span></h2>
+    <p class="sec-p reveal d2">Real problems solved with data — from messy raw sources to actionable insights.</p>
 
-    <!-- Intro sentence -->
-    <div style="background:white;border:1px solid var(--g200);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.1rem">
-      <p style="font-size:.86rem;color:var(--g600);line-height:1.7">I work across the full data lifecycle — from collecting and organizing raw data, to building the dashboards and reports that help decision-makers act with confidence. Here's a breakdown of what I use and what each tool helps me accomplish.</p>
-    </div>
-
-    <div class="gridauto">
-      <div class="skill-node">
-        <div class="skill-node-head"><div class="skill-icon" style="background:#F0FDFA">📊</div><div><div class="skill-node-name">Dashboards &amp; Reports</div><div class="skill-node-type">I turn data into visual stories</div></div></div>
-        <div style="font-size:.76rem;color:var(--g500);line-height:1.6;margin-bottom:.7rem">I build interactive reports that show trends, track KPIs, and help managers make decisions at a glance.</div>
-        <div class="tags"><span class="tag tag-t">Power BI</span><span class="tag tag-t">DAX</span><span class="tag tag-a">Excel Dashboards</span></div>
-      </div>
-      <div class="skill-node">
-        <div class="skill-node-head"><div class="skill-icon" style="background:#EFF6FF">🔄</div><div><div class="skill-node-name">Data Collection &amp; Processing</div><div class="skill-node-type">I organize and clean data automatically</div></div></div>
-        <div style="font-size:.76rem;color:var(--g500);line-height:1.6;margin-bottom:.7rem">I build automated systems that pull data from multiple sources, clean it, and make it ready for analysis — no manual work needed.</div>
-        <div class="tags"><span class="tag tag-b">Microsoft Fabric</span><span class="tag tag-b">Power Query</span><span class="tag tag-g">Power Automate</span></div>
-      </div>
-      <div class="skill-node">
-        <div class="skill-node-head"><div class="skill-icon" style="background:#EEF2FF">🗄️</div><div><div class="skill-node-name">Data Storage &amp; Databases</div><div class="skill-node-type">I manage where data lives</div></div></div>
-        <div style="font-size:.76rem;color:var(--g500);line-height:1.6;margin-bottom:.7rem">I work with modern cloud databases to store and query large amounts of data quickly and reliably.</div>
-        <div class="tags"><span class="tag tag-i">Snowflake</span><span class="tag tag-b">Google BigQuery</span><span class="tag tag-t">SQL</span></div>
-      </div>
-      <div class="skill-node">
-        <div class="skill-node-head"><div class="skill-icon" style="background:#FFFBEB">☁️</div><div><div class="skill-node-name">Cloud Platforms</div><div class="skill-node-type">I deploy solutions on the cloud</div></div></div>
-        <div style="font-size:.76rem;color:var(--g500);line-height:1.6;margin-bottom:.7rem">I use cloud services to host databases, run data tools, and build internal web portals accessible from anywhere in the organization.</div>
-        <div class="tags"><span class="tag tag-b">Microsoft Azure</span><span class="tag tag-b">Google Cloud</span></div>
-      </div>
-      <div class="skill-node">
-        <div class="skill-node-head"><div class="skill-icon" style="background:#F8FAFC">💻</div><div><div class="skill-node-name">Programming &amp; Automation</div><div class="skill-node-type">I write code to save time</div></div></div>
-        <div style="font-size:.76rem;color:var(--g500);line-height:1.6;margin-bottom:.7rem">I write Python and SQL scripts to automate reports, process data, and build tools that reduce manual, repetitive work.</div>
-        <div class="tags"><span class="tag tag-b">Python</span><span class="tag tag-t">SQL</span><span class="tag tag-p">AI-assisted Dev</span></div>
-      </div>
-      <div class="skill-node">
-        <div class="skill-node-head"><div class="skill-icon" style="background:#FAF5FF">🎓</div><div><div class="skill-node-name">Certifications</div><div class="skill-node-type">continuously learning</div></div></div>
-        <div style="font-size:.76rem;color:var(--g500);line-height:1.6;margin-bottom:.7rem">I hold industry certifications in data engineering, business intelligence, and data analysis — from platforms like Snowflake, Microsoft, and DataCamp.</div>
-        <div class="tags"><span class="tag tag-i">Data Engineering</span><span class="tag tag-t">Business Intelligence</span><span class="tag tag-a">Power BI</span></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SCREEN 3: PROJECTS -->
-  <div class="screen" id="screen-3">
-    <div class="stage-header">
-      <div>
-        <div class="stage-layer">selected work</div>
-        <h2 class="stage-title">My <span>Projects</span></h2>
-        <p class="stage-subtitle">Real problems I solved with data — from question to answer.</p>
-      </div>
-      <div class="stage-nav">
-        <button class="nav-btn nav-btn-back" onclick="goTo(2)">← Skills</button>
-        <button class="nav-btn nav-btn-next" onclick="goTo(4)">Experience →</button>
-      </div>
-    </div>
-    <div class="projects-grid">
+    <div class="proj-list">
 
       <!-- Project 1 -->
-      <div class="proj-card">
-        <div style="padding:.9rem 1rem .5rem;display:flex;align-items:center;justify-content:space-between">
-          <span style="font-size:1.4rem">🛒</span>
-          <span class="proj-status s-live">● Completed</span>
-        </div>
-        <div class="proj-body">
-          <div class="proj-name">E-commerce Sales Analysis</div>
-          <div style="font-size:.76rem;font-weight:600;color:var(--teal-d);margin-bottom:.5rem">What problem does it solve?</div>
-          <div class="proj-desc">An online retailer had scattered sales data with no clear view of which products were performing, which customers were most valuable, or where revenue was being lost. This project built a complete analysis from scratch — uncovering trends, grouping customers by behavior, and producing a dashboard to track performance at a glance.</div>
-          <div style="font-size:.76rem;font-weight:600;color:var(--g500);margin-bottom:.4rem;margin-top:.5rem">Tools used</div>
-          <div class="tags" style="margin-bottom:.8rem"><span class="tag tag-b">Python</span><span class="tag tag-t">Data Analysis</span><span class="tag tag-a">Charts &amp; Graphs</span><span class="tag tag-g">SQL</span></div>
-          <div style="display:flex;gap:1rem;border-top:1px solid var(--g100);padding-top:.65rem">
-            <div><div style="font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--g900)">Sales Trends</div><div style="font-size:.6rem;color:var(--g400);text-transform:uppercase">tracked</div></div>
-            <div><div style="font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--g900)">Customer Groups</div><div style="font-size:.6rem;color:var(--g400);text-transform:uppercase">identified</div></div>
-            <div><div style="font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--g900)">KPI Dashboard</div><div style="font-size:.6rem;color:var(--g400);text-transform:uppercase">delivered</div></div>
+      <div class="proj-card reveal">
+        <div class="pv pv-teal">
+          <div class="pv-shine"></div>
+          <div>
+            <div class="pv-lbl">Project 01</div>
+            <div class="pv-title">E-commerce Sales Analysis</div>
           </div>
-          <a href="https://github.com/aseelDE/E-commerce-Data-Analytics.git" target="_blank" class="proj-gh">View Project on GitHub ↗</a>
+          <div class="pv-chart">
+            <svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;opacity:.65">
+              <rect x="4"   y="30" width="22" height="28" rx="3" fill="rgba(255,255,255,.4)"/>
+              <rect x="32"  y="20" width="22" height="38" rx="3" fill="rgba(255,255,255,.4)"/>
+              <rect x="60"  y="25" width="22" height="33" rx="3" fill="rgba(255,255,255,.4)"/>
+              <rect x="88"  y="10" width="22" height="48" rx="3" fill="rgba(255,255,255,.65)"/>
+              <rect x="116" y="15" width="22" height="43" rx="3" fill="rgba(255,255,255,.65)"/>
+              <rect x="144" y="4"  width="22" height="54" rx="3" fill="#fff"/>
+              <rect x="172" y="8"  width="22" height="50" rx="3" fill="#fff"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="proj-body">
+          <div class="proj-meta">
+            <span class="badge-done">● Completed</span>
+            <span class="tool-tag">Python</span>
+            <span class="tool-tag">SQL</span>
+            <span class="tool-tag">Data Analysis</span>
+          </div>
+          <div>
+            <div class="prob-lbl">Problem Solved</div>
+            <p class="proj-desc">An online retailer had scattered sales data with no clear view of which products performed best, which customers were most valuable, or where revenue was being lost. Built a complete analysis — uncovering trends, grouping customers by behavior, and delivering a KPI dashboard to track performance at a glance.</p>
+          </div>
+          <div class="proj-kpis">
+            <div class="pk"><div class="pk-v">Sales Trends</div><div class="pk-l">Tracked &amp; visualized</div></div>
+            <div class="pk"><div class="pk-v">Customer Groups</div><div class="pk-l">Segmented by behavior</div></div>
+            <div class="pk"><div class="pk-v">KPI Dashboard</div><div class="pk-l">Delivered to team</div></div>
+          </div>
+          <div class="proj-ft">
+            <a href="https://github.com/aseelDE/E-commerce-Data-Analytics" target="_blank" class="gh-btn">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+              View on GitHub ↗
+            </a>
+          </div>
         </div>
       </div>
 
       <!-- Project 2 -->
-      <div class="proj-card">
-        <div style="padding:.9rem 1rem .5rem;display:flex;align-items:center;justify-content:space-between">
-          <span style="font-size:1.4rem">🌤️</span>
-          <span class="proj-status s-live">● Completed</span>
-        </div>
-        <div class="proj-body">
-          <div class="proj-name">Automated Weather Data Collection</div>
-          <div style="font-size:.76rem;font-weight:600;color:var(--teal-d);margin-bottom:.5rem">What problem does it solve?</div>
-          <div class="proj-desc">Manually downloading and updating weather data is slow and error-prone. This project built a fully automated system that connects to a live weather source, collects the data, cleans it, and stores it in a structured format — ready for analysis — without any human intervention needed.</div>
-          <div style="font-size:.76rem;font-weight:600;color:var(--g500);margin-bottom:.4rem;margin-top:.5rem">Tools used</div>
-          <div class="tags" style="margin-bottom:.8rem"><span class="tag tag-b">Python</span><span class="tag tag-t">Automation</span><span class="tag tag-a">Live Data Feed</span><span class="tag tag-g">Scheduling</span></div>
-          <div style="display:flex;gap:1rem;border-top:1px solid var(--g100);padding-top:.65rem">
-            <div><div style="font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--g900)">Fully Auto</div><div style="font-size:.6rem;color:var(--g400);text-transform:uppercase">no manual work</div></div>
-            <div><div style="font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--g900)">Live Data</div><div style="font-size:.6rem;color:var(--g400);text-transform:uppercase">always fresh</div></div>
-            <div><div style="font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--g900)">Clean Output</div><div style="font-size:.6rem;color:var(--g400);text-transform:uppercase">ready to use</div></div>
+      <div class="proj-card reveal d1">
+        <div class="pv pv-blue">
+          <div class="pv-shine"></div>
+          <div>
+            <div class="pv-lbl">Project 02</div>
+            <div class="pv-title">Automated Weather Data Pipeline</div>
           </div>
-          <a href="https://github.com/aseelDE/weather-data-pipeline.git" target="_blank" class="proj-gh">View Project on GitHub ↗</a>
+          <div class="pv-chart">
+            <svg viewBox="0 0 200 50" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;opacity:.65">
+              <polyline points="4,38 26,30 50,34 74,22 98,18 122,14 146,8 170,5 196,2" stroke="rgba(255,255,255,.8)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="196" cy="2" r="4" fill="#fff"/>
+              <circle cx="4"   cy="38" r="3" fill="rgba(255,255,255,.4)"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="proj-body">
+          <div class="proj-meta">
+            <span class="badge-done">● Completed</span>
+            <span class="tool-tag">Python</span>
+            <span class="tool-tag">Automation</span>
+            <span class="tool-tag">Live Data Feed</span>
+            <span class="tool-tag">Scheduling</span>
+          </div>
+          <div>
+            <div class="prob-lbl">Problem Solved</div>
+            <p class="proj-desc">Manually downloading and updating weather data was slow and error-prone. Built a fully automated pipeline that connects to a live weather source, collects, cleans, and stores data in a structured format — ready for analysis without any human intervention.</p>
+          </div>
+          <div class="proj-kpis">
+            <div class="pk"><div class="pk-v">Fully Automated</div><div class="pk-l">Zero manual steps</div></div>
+            <div class="pk"><div class="pk-v">Live Data</div><div class="pk-l">Always fresh</div></div>
+            <div class="pk"><div class="pk-v">Structured Output</div><div class="pk-l">Ready to analyze</div></div>
+          </div>
+          <div class="proj-ft">
+            <a href="https://github.com/aseelDE/weather-data-pipeline" target="_blank" class="gh-btn">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+              View on GitHub ↗
+            </a>
+          </div>
         </div>
       </div>
 
       <!-- Project 3 -->
-      <div class="proj-card">
-        <div style="padding:.9rem 1rem .5rem;display:flex;align-items:center;justify-content:space-between">
-          <span style="font-size:1.4rem">🏪</span>
-          <span class="proj-status s-live">● Completed</span>
+      <div class="proj-card reveal d2">
+        <div class="pv pv-violet">
+          <div class="pv-shine"></div>
+          <div>
+            <div class="pv-lbl">Project 03</div>
+            <div class="pv-title">Supermarket Sales &amp; Customer Report</div>
+          </div>
+          <div class="pv-chart">
+            <svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;opacity:.5">
+              <circle cx="50" cy="30" r="26" stroke="rgba(255,255,255,.8)" stroke-width="2" fill="none" stroke-dasharray="55 108"/>
+              <circle cx="50" cy="30" r="26" stroke="rgba(255,255,255,.45)" stroke-width="2" fill="none" stroke-dasharray="35 128" stroke-dashoffset="-55"/>
+              <circle cx="50" cy="30" r="26" stroke="rgba(255,255,255,.25)" stroke-width="2" fill="none" stroke-dasharray="18 145" stroke-dashoffset="-90"/>
+              <rect x="92"  y="18" width="100" height="8" rx="4" fill="rgba(255,255,255,.7)"/>
+              <rect x="92"  y="32" width="70"  height="8" rx="4" fill="rgba(255,255,255,.5)"/>
+              <rect x="92"  y="46" width="45"  height="8" rx="4" fill="rgba(255,255,255,.3)"/>
+            </svg>
+          </div>
         </div>
+
         <div class="proj-body">
-          <div class="proj-name">Supermarket Sales &amp; Customer Report</div>
-          <div style="font-size:.76rem;font-weight:600;color:var(--teal-d);margin-bottom:.5rem">What problem does it solve?</div>
-          <div class="proj-desc">A supermarket chain needed a clear picture of its sales performance — total revenue, best-selling categories, and customer spending patterns. This project analyzed the full dataset and produced a comprehensive report with charts and breakdowns that managers could read and act on immediately.</div>
-          <div style="font-size:.76rem;font-weight:600;color:var(--g500);margin-bottom:.4rem;margin-top:.5rem">Tools used</div>
-          <div class="tags" style="margin-bottom:.8rem"><span class="tag tag-t">SQL</span><span class="tag tag-b">Python</span><span class="tag tag-t">Power BI</span><span class="tag tag-a">Excel</span></div>
-          <div style="display:flex;gap:1rem;border-top:1px solid var(--g100);padding-top:.65rem">
-            <div><div style="font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--g900)">Revenue</div><div style="font-size:.6rem;color:var(--g400);text-transform:uppercase">analyzed</div></div>
-            <div><div style="font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--g900)">Categories</div><div style="font-size:.6rem;color:var(--g400);text-transform:uppercase">compared</div></div>
-            <div><div style="font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--g900)">Full Report</div><div style="font-size:.6rem;color:var(--g400);text-transform:uppercase">delivered</div></div>
+          <div class="proj-meta">
+            <span class="badge-done">● Completed</span>
+            <span class="tool-tag">SQL</span>
+            <span class="tool-tag">Python</span>
+            <span class="tool-tag">Power BI</span>
+            <span class="tool-tag">Excel</span>
           </div>
-          <a href="https://github.com/aseelDE/aseelDE-Sales-Customer-Analytics.git" target="_blank" class="proj-gh">View Project on GitHub ↗</a>
+          <div>
+            <div class="prob-lbl">Problem Solved</div>
+            <p class="proj-desc">A supermarket chain needed a clear picture of revenue, best-selling categories, and customer spending patterns. Analyzed the full dataset and produced a comprehensive report with charts and breakdowns that managers could immediately read and act on.</p>
+          </div>
+          <div class="proj-kpis">
+            <div class="pk"><div class="pk-v">Revenue</div><div class="pk-l">Fully analyzed</div></div>
+            <div class="pk"><div class="pk-v">Categories</div><div class="pk-l">Ranked &amp; compared</div></div>
+            <div class="pk"><div class="pk-v">Full Report</div><div class="pk-l">Delivered to mgmt</div></div>
+          </div>
+          <div class="proj-ft">
+            <a href="https://github.com/aseelDE/aseelDE-Sales-Customer-Analytics" target="_blank" class="gh-btn">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+              View on GitHub ↗
+            </a>
+          </div>
         </div>
       </div>
 
     </div>
-    <div style="margin-top:.9rem;padding:.75rem 1rem;background:var(--g50);border:1px solid var(--g200);border-radius:9px;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
-      <span style="font-size:.82rem;color:var(--g500)">See all my work on my portfolio site:</span>
-      <a href="https://sites.google.com/view/assel0/projects" target="_blank" style="font-family:var(--mono);font-size:.72rem;font-weight:600;color:var(--blue-d);text-decoration:none;background:var(--blue-ll);padding:4px 12px;border-radius:6px;border:1px solid var(--blue-l)">sites.google.com/view/assel0/projects ↗</a>
-    </div>
   </div>
+</section>
 
-  <!-- SCREEN 4: EXPERIENCE -->
-  <div class="screen" id="screen-4">
-    <div class="stage-header">
-      <div>
-        <div class="stage-layer">career journey</div>
-        <h2 class="stage-title">Experience &amp; <span>Education</span></h2>
-        <p class="stage-subtitle">Where I've worked, what I studied, and how I've grown.</p>
-      </div>
-      <div class="stage-nav">
-        <button class="nav-btn nav-btn-back" onclick="goTo(3)">← Projects</button>
-        <button class="nav-btn nav-btn-next" onclick="goTo(5)">Contact →</button>
-      </div>
-    </div>
+<!-- ============================================================
+     EXPERIENCE
+     ============================================================ -->
+<section id="experience">
+  <div class="sec-in">
+    <div class="eyebrow reveal">Experience</div>
+    <h2 class="sec-h reveal d1">Career &amp; <span class="grad">Education</span></h2>
+    <p class="sec-p reveal d2">Where I've worked, what I studied, and how I've grown.</p>
+
     <div class="exp-layout">
-      <div>
-        <div style="font-size:.7rem;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.8rem">Work Experience</div>
-        <div class="timeline">
-          <div class="t-item">
-            <div class="t-dot"></div>
-            <div class="t-card">
-              <div class="t-head">
-                <div>
-                  <div class="t-title">Data Analyst</div>
-                  <div class="t-company">Aujan Coca-Cola Beverage Company (ACCBC) · Riyadh</div>
-                </div>
-                <span class="t-date">Aug 2025 – Present</span>
+
+      <!-- Timeline -->
+      <div class="exp-tl">
+
+        <div class="exp-item reveal d1">
+          <div class="exp-track">
+            <div class="exp-node now"></div>
+            <div class="exp-line"></div>
+          </div>
+          <div>
+            <div class="exp-card">
+              <div class="exp-period cur">Aug 2025 – Present</div>
+              <div class="exp-title">Data Analyst</div>
+              <div class="exp-co">Aujan Coca-Cola Beverage Company (ACCBC) · Riyadh</div>
+              <div class="exp-bullets">
+                <div class="exp-bullet">Collect, clean, and transform raw datasets from multiple sources using Power Query, ETL pipelines, and Microsoft Fabric.</div>
+                <div class="exp-bullet">Design and build interactive Power BI dashboards tracking KPIs, sales trends, and business performance for the sales team.</div>
+                <div class="exp-bullet">Leverage AI tools to automate business reports; develop internal web portals on Microsoft Azure used across branch offices.</div>
+                <div class="exp-bullet">Participate in performance reviews to drive business initiatives and close performance gaps.</div>
               </div>
-              <ul style="margin-bottom:.7rem;padding-left:1.1rem;display:flex;flex-direction:column;gap:5px">
-                <li style="font-size:.82rem;color:var(--g600);line-height:1.65">Collect, clean, and transform raw datasets from multiple sources (Excel, Database, and external files) using Power Query, ETL pipelines and Microsoft Fabric.</li>
-                <li style="font-size:.82rem;color:var(--g600);line-height:1.65">Participate in performance reviews with the sales team to drive business unit initiatives and close performance gaps.</li>
-                <li style="font-size:.82rem;color:var(--g600);line-height:1.65">Identify product sales trends to help stakeholders make informed business decisions.</li>
-                <li style="font-size:.82rem;color:var(--g600);line-height:1.65">Design and build interactive dashboards and reports in Power BI to track KPIs, trends, and business performance.</li>
-                <li style="font-size:.82rem;color:var(--g600);line-height:1.65">Leverage AI tools to automate and enhance business reports, and developed internal web portals to support business operations using Microsoft Azure.</li>
-                <li style="font-size:.82rem;color:var(--g600);line-height:1.65">Update and distribute the daily sales report to internal teams and branch offices, ensuring timely access to performance data.</li>
-              </ul>
-              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:.7rem">
-                <div style="background:var(--teal-l);border-radius:7px;padding:6px 8px;text-align:center">
-                  <div style="font-size:.7rem;font-weight:700;color:var(--teal-d)">Dashboards</div>
-                  <div style="font-size:.62rem;color:var(--g500)">Power BI reports</div>
-                </div>
-                <div style="background:var(--blue-ll);border-radius:7px;padding:6px 8px;text-align:center">
-                  <div style="font-size:.7rem;font-weight:700;color:var(--blue-d)">Automation</div>
-                  <div style="font-size:.62rem;color:var(--g500)">Daily reports</div>
-                </div>
-                <div style="background:var(--indigo-l);border-radius:7px;padding:6px 8px;text-align:center">
-                  <div style="font-size:.7rem;font-weight:700;color:var(--indigo)">Web Portals</div>
-                  <div style="font-size:.62rem;color:var(--g500)">Internal tools</div>
-                </div>
+              <div class="exp-tags">
+                <span class="et">Microsoft Fabric</span>
+                <span class="et">Power BI</span>
+                <span class="et">Azure</span>
+                <span class="et">ETL Pipelines</span>
+                <span class="et">Power Query</span>
               </div>
-              <div class="t-tags"><span class="tag tag-b">Microsoft Fabric</span><span class="tag tag-t">Power BI</span><span class="tag tag-b">Azure</span><span class="tag tag-g">ETL</span></div>
             </div>
           </div>
-          <div class="t-item">
-            <div class="t-dot"></div>
-            <div class="t-card">
-              <div class="t-head">
-                <div>
-                  <div class="t-title">ICT Graduate</div>
-                  <div class="t-company">AECOM – NEOM Airport Project · Neom, KSA</div>
-                </div>
-                <span class="t-date">Aug 2023 – Apr 2025</span>
-              </div>
-              <ul style="padding-left:1.1rem;display:flex;flex-direction:column;gap:5px">
-                <li style="font-size:.82rem;color:var(--g600);line-height:1.65">Reviewed ICT system designs and contractor submissions to ensure compliance with project, technical, and regulatory standards.</li>
-                <li style="font-size:.82rem;color:var(--g600);line-height:1.65">Coordinated with stakeholders to gather requirements, define scope, and validate implemented ICT and airport special systems.</li>
-                <li style="font-size:.82rem;color:var(--g600);line-height:1.65">Supervised installation and configuration of critical IT infrastructure including networks, cabling, security, and special airport systems.</li>
-              </ul>
-              <div class="t-tags"><span class="tag tag-b">Large-scale Projects</span><span class="tag tag-g">Stakeholder Coordination</span><span class="tag tag-a">Technical Review</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div style="font-size:.7rem;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.8rem">Education</div>
-        <div class="edu-card" style="margin-bottom:.85rem">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem;flex-wrap:wrap;gap:5px">
-            <div>
-              <div style="font-size:.9rem;font-weight:700;color:var(--g900)">Bachelor Degree in Management Information Systems</div>
-              <div style="font-size:.78rem;color:var(--indigo);font-weight:500;margin-top:.15rem">University of Tabuk · Tabuk, KSA</div>
-            </div>
-            <span style="font-family:var(--mono);font-size:.62rem;background:var(--indigo-l);color:var(--indigo);padding:3px 9px;border-radius:5px;white-space:nowrap">2019 – 2023</span>
-          </div>
-          <p style="font-size:.8rem;color:var(--g600);line-height:1.65;margin-bottom:.7rem">A degree that bridges business and technology — covering databases, systems analysis, programming, and how organizations use information to make decisions.</p>
-          <span style="font-family:var(--mono);font-size:.72rem;font-weight:700;color:var(--teal-d);background:var(--teal-l);padding:3px 10px;border-radius:5px">Graduated with GPA 4.72 / 5.0</span>
         </div>
 
-        <div style="font-size:.7rem;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.7rem">Professional Certifications</div>
-        <div style="display:flex;flex-direction:column;gap:6px">
-          <div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:white;border:1px solid var(--g200);border-radius:8px;font-size:.78rem;color:var(--g700)">
-            <span style="font-size:.9rem;flex-shrink:0">🏅</span> Associate Data Engineer — Snowflake
+        <div class="exp-item reveal d2">
+          <div class="exp-track">
+            <div class="exp-node"></div>
+            <div class="exp-line"></div>
           </div>
-          <div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:white;border:1px solid var(--g200);border-radius:8px;font-size:.78rem;color:var(--g700)">
-            <span style="font-size:.9rem;flex-shrink:0">🏅</span> Data Analysis using Power BI
-          </div>
-          <div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:white;border:1px solid var(--g200);border-radius:8px;font-size:.78rem;color:var(--g700)">
-            <span style="font-size:.9rem;flex-shrink:0">🏅</span> Business Intelligence Path
-          </div>
-          <div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:white;border:1px solid var(--g200);border-radius:8px;font-size:.78rem;color:var(--g700)">
-            <span style="font-size:.9rem;flex-shrink:0">🏅</span> Data Ingestion &amp; Semantic Models — Microsoft Fabric
-          </div>
-          <div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:white;border:1px solid var(--g200);border-radius:8px;font-size:.78rem;color:var(--g700)">
-            <span style="font-size:.9rem;flex-shrink:0">🏅</span> Data Visualization &amp; Dashboards with Excel
-          </div>
-          <div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:white;border:1px solid var(--g200);border-radius:8px;font-size:.78rem;color:var(--g700)">
-            <span style="font-size:.9rem;flex-shrink:0">🏅</span> Reporting in SQL · Importing Data in Python
+          <div>
+            <div class="exp-card">
+              <div class="exp-period">Aug 2023 – Apr 2025</div>
+              <div class="exp-title">ICT Graduate</div>
+              <div class="exp-co">AECOM — NEOM Airport Project · Neom, KSA</div>
+              <div class="exp-bullets">
+                <div class="exp-bullet">Reviewed ICT system designs and contractor submissions to ensure technical and regulatory compliance.</div>
+                <div class="exp-bullet">Coordinated with stakeholders to gather requirements, define scope, and validate ICT systems.</div>
+                <div class="exp-bullet">Supervised installation and configuration of critical IT infrastructure: networks, cabling, security, and airport systems.</div>
+              </div>
+              <div class="exp-tags">
+                <span class="et">Large-scale Infrastructure</span>
+                <span class="et">Stakeholder Coordination</span>
+                <span class="et">Technical Review</span>
+              </div>
+            </div>
           </div>
         </div>
+
+      </div>
+
+      <!-- Education & Certs -->
+      <div class="reveal d2">
+
+        <div class="edu-card">
+          <div class="edu-hd">
+            <div class="edu-deg">Bachelor of Management Information Systems</div>
+            <div class="edu-sch">University of Tabuk · Tabuk, Saudi Arabia</div>
+          </div>
+          <div class="edu-body">
+            <div class="edu-row">
+              <span class="edu-lbl">Period</span>
+              <span class="edu-val">2019 – 2023</span>
+            </div>
+            <div class="edu-row">
+              <span class="edu-lbl">Final GPA</span>
+              <span class="edu-gpa">4.72 <span class="gpa-max">/ 5.0</span></span>
+            </div>
+            <div class="edu-row">
+              <span class="edu-lbl">Focus</span>
+              <span class="edu-val" style="font-size:.78rem">Databases · Systems Analysis · Programming</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="certs-lbl">Professional Certifications</div>
+        <div class="cert-list">
+          <div class="cert-row"><div class="cert-icon">S</div>Associate Data Engineer — Snowflake</div>
+          <div class="cert-row"><div class="cert-icon">P</div>Data Analysis using Power BI</div>
+          <div class="cert-row"><div class="cert-icon">B</div>Business Intelligence Path</div>
+          <div class="cert-row"><div class="cert-icon">F</div>Data Ingestion &amp; Semantic Models — Microsoft Fabric</div>
+          <div class="cert-row"><div class="cert-icon">E</div>Data Visualization &amp; Dashboards with Excel</div>
+          <div class="cert-row"><div class="cert-icon">D</div>Reporting in SQL · Importing Data in Python</div>
+        </div>
+
       </div>
     </div>
   </div>
+</section>
 
-  <!-- SCREEN 5: CONTACT -->
-  <div class="screen" id="screen-5">
-    <div class="stage-header">
-      <div>
-        <div class="stage-layer">reach out</div>
-        <h2 class="stage-title">Get in <span>Touch</span></h2>
-        <p class="stage-subtitle">I'd love to hear from you — whether it's a role, a project, or just a conversation.</p>
-      </div>
-      <div class="stage-nav">
-        <button class="nav-btn nav-btn-back" onclick="goTo(4)">← Experience</button>
-        <button class="nav-btn nav-btn-finish" onclick="goTo(1)">↺ Start Over</button>
-      </div>
-    </div>
-    <div class="contact-wrap">
-      <div class="contact-card">
-        <div style="text-align:center;margin-bottom:1.5rem">
-          <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--blue-l),var(--teal-l));display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:1.1rem;font-weight:700;color:var(--blue-d);margin:0 auto .75rem">AA</div>
-          <div class="contact-title">Aseel Alzahrani</div>
-          <div class="contact-sub">Data Analyst · Riyadh, Saudi Arabia<br>Open to new roles and collaborations.</div>
-        </div>
-        <div class="clinks">
-          <a href="mailto:alzahraniaseel0@gmail.com" class="clink"><div class="clink-icon" style="background:#EFF6FF">📧</div>alzahraniaseel0@gmail.com<span style="margin-left:auto;flex-shrink:0;color:var(--g300);font-size:.72rem">→</span></a>
-          <a href="https://www.linkedin.com/in/aseel-alzahrani-45ba06208/" target="_blank" class="clink"><div class="clink-icon" style="background:#EFF6FF">💼</div>LinkedIn Profile<span style="margin-left:auto;flex-shrink:0;color:var(--g300);font-size:.72rem">↗</span></a>
-          <a href="https://github.com/aseelDE" target="_blank" class="clink"><div class="clink-icon" style="background:#F8FAFC">💻</div>GitHub — View my code<span style="margin-left:auto;flex-shrink:0;color:var(--g300);font-size:.72rem">↗</span></a>
-          <a href="https://sites.google.com/view/assel0/projects" target="_blank" class="clink"><div class="clink-icon" style="background:#F0FDFA">🌐</div>Full Portfolio Website<span style="margin-left:auto;flex-shrink:0;color:var(--g300);font-size:.72rem">↗</span></a>
-          <a href="tel:+966598261537" class="clink"><div class="clink-icon" style="background:#FFFBEB">📞</div>+966 598 261 537<span style="margin-left:auto;flex-shrink:0;color:var(--g300);font-size:.72rem">→</span></a>
-        </div>
-      </div>
+<!-- ============================================================
+     CONTACT
+     ============================================================ -->
+<section id="contact" class="sec-dk">
+  <div class="sec-in">
+    <div class="eyebrow reveal">Contact</div>
+    <h2 class="sec-h reveal d1">Get in <span class="grad">Touch</span></h2>
+    <p class="sec-p reveal d2">Open to new roles, collaborations, and conversations about data.</p>
+
+    <div class="contact-grid">
+      <a href="mailto:alzahraniaseel0@gmail.com" class="c-card reveal d1">
+        <div class="c-icon">📧</div>
+        <div><div class="c-lbl">Email</div><div class="c-val">alzahraniaseel0@gmail.com</div></div>
+      </a>
+      <a href="https://www.linkedin.com/in/aseel-alzahrani-45ba06208/" target="_blank" class="c-card reveal d2">
+        <div class="c-icon">💼</div>
+        <div><div class="c-lbl">LinkedIn</div><div class="c-val">aseel-alzahrani</div></div>
+      </a>
+      <a href="https://github.com/aseelDE" target="_blank" class="c-card reveal d1">
+        <div class="c-icon">💻</div>
+        <div><div class="c-lbl">GitHub</div><div class="c-val">github.com/aseelDE</div></div>
+      </a>
+      <a href="https://sites.google.com/view/assel0/projects" target="_blank" class="c-card reveal d2">
+        <div class="c-icon">🌐</div>
+        <div><div class="c-lbl">Portfolio</div><div class="c-val">sites.google.com/view/assel0</div></div>
+      </a>
+      <a href="tel:+966598261537" class="c-card reveal d3">
+        <div class="c-icon">📞</div>
+        <div><div class="c-lbl">Phone</div><div class="c-val">+966 598 261 537</div></div>
+      </a>
     </div>
   </div>
+</section>
 
-</div>
+<!-- Back to top -->
+<button id="back-top" aria-label="Back to top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
 
-<!-- STATUS BAR -->
-<div id="status-bar">
-  <div class="sb-item"><div class="sb-dot sb-green"></div>pipeline: running</div>
-  <div class="sb-item"><div class="sb-dot sb-blue"></div><span id="sb-stage">About Me · Who I am</span></div>
-  <div class="sb-sep"></div>
-  <div class="sb-item" id="sb-progress">1 / 5 stages</div>
-  <div class="sb-item sb-keys">← → arrow keys</div>
-</div>
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer id="foot">
+  <div class="foot-in">
+    <div class="foot-l"><strong>Aseel Alzahrani</strong> · Data Analyst · Riyadh, Saudi Arabia</div>
+    <div class="foot-r">© 2025</div>
+  </div>
+</footer>
 
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
 <script>
-const STAGES=[
-  {id:'entry',      badge:'entry',     file:'boot.sh'},
-  {id:'About Me',   badge:'source',    file:'Who I am'},
-  {id:'Skills',     badge:'ingest',    file:'What I work with'},
-  {id:'Projects',   badge:'transform', file:'What I built'},
-  {id:'Experience', badge:'model',     file:'Where I worked'},
-  {id:'Contact',    badge:'serve',     file:'Reach out'},
-];
-const LABELS=['','About','Skills','Projects','Experience','Contact'];
+/* ── Theme ──────────────────────────────────────────────── */
+const html = document.documentElement;
+const stored = localStorage.getItem('aa-theme') || 'dark';
+html.setAttribute('data-theme', stored);
 
-let current=1;
-const visited=new Set([1]);
-
-function buildBar(){
-  const t=document.getElementById('pipe-track');
-  t.innerHTML='';
-  for(let i=1;i<=5;i++){
-    if(i>1){
-      const c=document.createElement('div');
-      c.className='pipe-conn'+(visited.has(i-1)||visited.has(i)?' done':'');
-      c.innerHTML='<div class="pipe-conn-flow"></div>';
-      t.appendChild(c);
-    }
-    const s=STAGES[i];
-    const isActive=i===current;
-    const wasVisited=visited.has(i)&&!isActive;
-    const n=document.createElement('div');
-    n.className='pipe-node'+(isActive?' active':'')+(wasVisited?' visited':'');
-    n.innerHTML=`<div class="pn-top"><span class="pn-badge">${s.badge}</span><span class="pn-check">✓</span></div><div class="pn-name">${LABELS[i]}</div><div class="pn-file">${s.file}</div>`;
-    n.onclick=()=>goTo(i);
-    t.appendChild(n);
-  }
+function applyThemeIcon(t) {
+  document.getElementById('ico-moon').style.display = t === 'dark'  ? '' : 'none';
+  document.getElementById('ico-sun' ).style.display = t === 'light' ? '' : 'none';
 }
+applyThemeIcon(stored);
 
-function goTo(idx){
-  if(idx<0||idx>5)return;
-  const prev=current;
-  if(prev===idx)return;
-  const pe=document.getElementById('screen-'+prev);
-  const ne=document.getElementById('screen-'+idx);
-  const dir=idx>prev?1:-1;
-
-  /* If restarting, wipe all visited history first */
-  if(idx===1 && prev!==0){
-    visited.clear();
-  }
-
-  /* 1. Instantly hide the outgoing screen */
-  pe.classList.remove('active');
-  pe.classList.add('exiting');
-  setTimeout(()=>{pe.classList.remove('exiting');pe.style.cssText='';},50);
-
-  /* 2. Position incoming off-screen instantly */
-  ne.style.cssText=`transition:none;transform:translateX(${dir*48}px);opacity:0;visibility:visible`;
-
-  /* 3. Slide in */
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{
-    ne.style.cssText='transition:opacity .28s ease,transform .28s ease;transform:translateX(0);opacity:1;visibility:visible';
-    ne.classList.add('active');
-    setTimeout(()=>{ne.style.cssText='';},320);
-  }));
-
-  current=idx;
-  visited.add(idx);
-  buildBar();
-
-  const s=STAGES[idx];
-  document.getElementById('sb-stage').textContent=s.id+' · '+s.file;
-  const done=Math.max(0,[...visited].filter(x=>x>0).length);
-  document.getElementById('sb-progress').textContent=Math.min(done,5)+' / 5 stages';
-}
-
-buildBar();
-
-document.addEventListener('keydown',e=>{
-  if(e.key==='ArrowRight'||e.key==='ArrowDown') goTo(Math.min(current+1,5));
-  if(e.key==='ArrowLeft'||e.key==='ArrowUp')    goTo(Math.max(current-1,1));
+document.getElementById('theme-btn').addEventListener('click', () => {
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('aa-theme', next);
+  applyThemeIcon(next);
 });
+
+/* ── Scroll progress ─────────────────────────────────── */
+const bar = document.getElementById('scroll-bar');
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight) * 100;
+  bar.style.width = pct + '%';
+}, { passive: true });
+
+/* ── Navbar scroll + back-to-top ────────────────────── */
+const nav     = document.getElementById('nav');
+const backTop = document.getElementById('back-top');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 24);
+  backTop.classList.toggle('show', window.scrollY > 400);
+}, { passive: true });
+
+backTop.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+/* ── Mobile menu ─────────────────────────────────────── */
+const hamBtn  = document.getElementById('ham');
+const mobMenu = document.getElementById('mob-menu');
+hamBtn.addEventListener('click', () => {
+  const open = hamBtn.classList.toggle('open');
+  mobMenu.classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+});
+mobMenu.querySelectorAll('[data-mob]').forEach(a => {
+  a.addEventListener('click', () => {
+    hamBtn.classList.remove('open');
+    mobMenu.classList.remove('open');
+    document.body.style.overflow = '';
+  });
+});
+
+/* ── Active nav on scroll ──────────────────────────── */
+const sections = document.querySelectorAll('section[id]');
+const navAs    = document.querySelectorAll('.nav-a');
+
+const secObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    navAs.forEach(a => a.classList.remove('active'));
+    const a = document.querySelector(`.nav-a[data-s="${e.target.id}"]`);
+    if (a) a.classList.add('active');
+  });
+}, { rootMargin: '-40% 0px -55% 0px' });
+
+sections.forEach(s => secObs.observe(s));
+
+/* ── Scroll reveal ──────────────────────────────────── */
+const revObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('in');
+      revObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => revObs.observe(el));
 </script>
 </body>
 </html>
