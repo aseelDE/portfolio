@@ -317,21 +317,6 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .hero-p{font-size:1.05rem;color:rgba(203,213,225,.8);line-height:1.78;max-width:460px}
 .hero-p strong{color:rgba(241,245,249,.95);font-weight:600}
 
-.hero-stats{
-  display:flex;width:fit-content;
-  border:1px solid rgba(255,255,255,.08);border-radius:12px;
-  overflow:hidden;background:rgba(255,255,255,.03);
-}
-.hs{
-  padding:.95rem 1.4rem;display:flex;flex-direction:column;gap:2px;
-  border-right:1px solid rgba(255,255,255,.07);
-}
-.hs:last-child{border-right:none}
-.hs-n{
-  font-family:var(--f-hd);font-size:1.55rem;font-weight:800;
-  color:#fff;line-height:1;letter-spacing:-.03em;
-}
-.hs-l{font-size:.62rem;font-weight:500;color:rgba(148,163,184,.65);text-transform:uppercase;letter-spacing:.09em}
 
 .hero-btns{display:flex;gap:.75rem;flex-wrap:wrap}
 .btn-p{
@@ -473,25 +458,6 @@ section{padding:var(--py) 0}
 /* ============================================================
    ABOUT
    ============================================================ */
-.about-stats{
-  display:grid;grid-template-columns:repeat(4,1fr);
-  border:1px solid var(--border);border-radius:16px;
-  overflow:hidden;background:var(--card);
-  margin-bottom:2.75rem;box-shadow:var(--sh);
-}
-.as{
-  padding:1.75rem 1.5rem;border-right:1px solid var(--border);
-  position:relative;transition:background .2s;
-}
-.as:last-child{border-right:none}
-.as:hover{background:var(--bg2)}
-.as::after{content:'';position:absolute;top:0;left:0;right:0;height:3px}
-.as1::after{background:linear-gradient(90deg,var(--blue),var(--blue-l))}
-.as2::after{background:linear-gradient(90deg,var(--teal),var(--teal-l))}
-.as3::after{background:linear-gradient(90deg,var(--violet),var(--violet-l))}
-.as4::after{background:linear-gradient(90deg,var(--amber),var(--amber-l))}
-.as-n{font-family:var(--f-hd);font-size:2.2rem;font-weight:800;color:var(--text);line-height:1;letter-spacing:-.04em;margin-bottom:.3rem}
-.as-l{font-size:.68rem;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em}
 
 .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start}
 .about-bio{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem;box-shadow:var(--sh)}
@@ -624,8 +590,9 @@ section{padding:var(--py) 0}
 .exp-period.cur{color:var(--green);background:rgba(22,163,74,.07);border-color:rgba(22,163,74,.2)}
 .exp-title{font-family:var(--f-hd);font-size:1rem;font-weight:700;color:var(--text);margin-bottom:.14rem}
 .exp-co{font-size:.82rem;color:var(--blue-l);font-weight:500;margin-bottom:.85rem}
-.exp-bullets{display:flex;flex-direction:column;gap:.42rem;padding-left:1rem;border-left:2px solid var(--border2)}
-.exp-bullet{font-size:.83rem;color:var(--text2);line-height:1.65}
+.exp-bullets{display:flex;flex-direction:column;gap:.42rem;padding-left:1.25rem;border-left:2px solid var(--border2)}
+.exp-bullet{font-size:.83rem;color:var(--text2);line-height:1.65;position:relative;padding-left:.9rem}
+.exp-bullet::before{content:'•';position:absolute;left:0;color:var(--blue-l);font-size:.9rem;line-height:1.65}
 .exp-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.85rem}
 .et{font-size:.6rem;font-weight:600;padding:3px 9px;border-radius:6px;background:var(--bg2);border:1px solid var(--border);color:var(--text3)}
 
@@ -735,7 +702,6 @@ section{padding:var(--py) 0}
   :root{--py:4rem}
   .nav-links,.nav-cta{display:none}
   .ham{display:flex}
-  .about-stats{grid-template-columns:1fr 1fr}
   .about-grid{grid-template-columns:1fr}
   .proj-card{grid-template-columns:1fr}
   .pv{min-height:160px}
@@ -743,8 +709,6 @@ section{padding:var(--py) 0}
 @media(max-width:640px){
   :root{--px:1.25rem;--py:3.5rem}
   .hero-h{font-size:2.75rem}
-  .hero-stats{flex-wrap:wrap}
-  .about-stats{grid-template-columns:1fr 1fr}
   .skills-grid{grid-template-columns:1fr}
   .proj-kpis{grid-template-columns:1fr 1fr}
   .contact-grid{grid-template-columns:1fr}
@@ -830,16 +794,10 @@ section{padding:var(--py) 0}
         and cloud data systems — so teams make faster, better decisions.
       </p>
 
-      <div class="hero-stats">
-        <div class="hs"><span class="hs-n">2+</span><span class="hs-l">Years Exp.</span></div>
-        <div class="hs"><span class="hs-n">3</span><span class="hs-l">Projects</span></div>
-        <div class="hs"><span class="hs-n">4.72</span><span class="hs-l">GPA</span></div>
-        <div class="hs"><span class="hs-n">6</span><span class="hs-l">Certs</span></div>
-      </div>
-
       <div class="hero-btns">
         <a href="#projects" class="btn-p">View My Work ↓</a>
         <a href="#contact"  class="btn-g">Get in Touch</a>
+        <a href="cv.html" target="_blank" class="btn-g">View CV ↗</a>
       </div>
     </div>
 
@@ -951,13 +909,6 @@ section{padding:var(--py) 0}
     <h2 class="sec-h reveal d1">Who I <span class="grad">Am</span></h2>
     <p class="sec-p reveal d2">Data analyst based in Riyadh, specializing in dashboards, automated pipelines, and cloud data platforms.</p>
 
-    <div class="about-stats reveal d1">
-      <div class="as as1"><div class="as-n">2+</div><div class="as-l">Years of Experience</div></div>
-      <div class="as as2"><div class="as-n">3</div><div class="as-l">Completed Projects</div></div>
-      <div class="as as3"><div class="as-n">4.72</div><div class="as-l">GPA / 5.0</div></div>
-      <div class="as as4"><div class="as-n">6</div><div class="as-l">Certifications</div></div>
-    </div>
-
     <div class="about-grid">
       <div class="about-bio reveal d2">
         <div class="bio-lbl">Summary</div>
@@ -982,7 +933,7 @@ section{padding:var(--py) 0}
         </div>
         <div class="dc reveal d5">
           <div class="dc-icon" style="background:#FFFBEB">📊</div>
-          <div><div class="dc-lbl">Focus Areas</div><div class="dc-val">Power BI · Data Warehousing · ETL Pipelines</div></div>
+          <div><div class="dc-lbl">Focus Areas</div><div class="dc-val">Data Analytics · Data Engineering · Business Intelligence</div></div>
         </div>
       </div>
     </div>
@@ -1006,6 +957,7 @@ section{padding:var(--py) 0}
         <div class="sk-chips">
           <span class="chip ch-t">Power BI</span>
           <span class="chip ch-t">DAX</span>
+          <span class="chip ch-t">Looker Studio</span>
           <span class="chip ch-t">Excel Dashboards</span>
           <span class="chip ch-t">KPI Reports</span>
         </div>
@@ -1019,6 +971,8 @@ section{padding:var(--py) 0}
           <span class="chip ch-b">Microsoft Fabric</span>
           <span class="chip ch-b">Power Query</span>
           <span class="chip ch-b">Power Automate</span>
+          <span class="chip ch-b">Prefect</span>
+          <span class="chip ch-b">GitHub Actions</span>
           <span class="chip ch-b">ETL Pipelines</span>
         </div>
       </div>
@@ -1030,6 +984,8 @@ section{padding:var(--py) 0}
         <div class="sk-chips">
           <span class="chip ch-v">Snowflake</span>
           <span class="chip ch-v">Google BigQuery</span>
+          <span class="chip ch-v">SQL Server</span>
+          <span class="chip ch-v">T-SQL</span>
           <span class="chip ch-v">SQL</span>
           <span class="chip ch-v">Data Modeling</span>
         </div>
@@ -1042,17 +998,19 @@ section{padding:var(--py) 0}
         <div class="sk-chips">
           <span class="chip ch-a">Microsoft Azure</span>
           <span class="chip ch-a">Google Cloud</span>
-          <span class="chip ch-a">Cloud Data Services</span>
+          <span class="chip ch-a">BigQuery</span>
+          <span class="chip ch-a">Google Cloud Storage</span>
         </div>
       </div>
 
       <div class="sk-card reveal d3">
         <div class="sk-icon">💻</div>
         <div class="sk-title">Programming &amp; Automation</div>
-        <div class="sk-desc">Scripts that automate reports, process data, and reduce manual work across teams.</div>
+        <div class="sk-desc">Scripts that automate reports, process data, and build tools that reduce manual work.</div>
         <div class="sk-chips">
           <span class="chip ch-s">Python</span>
           <span class="chip ch-s">SQL</span>
+          <span class="chip ch-s">Flask</span>
           <span class="chip ch-s">Data Pipelines</span>
           <span class="chip ch-s">AI-assisted Dev</span>
         </div>
@@ -1066,6 +1024,8 @@ section{padding:var(--py) 0}
           <span class="chip ch-t">Sales Analytics</span>
           <span class="chip ch-t">Performance Tracking</span>
           <span class="chip ch-t">Trend Analysis</span>
+          <span class="chip ch-t">Anomaly Detection</span>
+          <span class="chip ch-t">Customer Segmentation</span>
         </div>
       </div>
     </div>
@@ -1089,7 +1049,7 @@ section{padding:var(--py) 0}
           <div class="pv-shine"></div>
           <div>
             <div class="pv-lbl">Project 01</div>
-            <div class="pv-title">E-commerce Sales Analysis</div>
+            <div class="pv-title">E-commerce Data Pipeline</div>
           </div>
           <div class="pv-chart">
             <svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;opacity:.65">
@@ -1108,17 +1068,18 @@ section{padding:var(--py) 0}
           <div class="proj-meta">
             <span class="badge-done">● Completed</span>
             <span class="tool-tag">Python</span>
+            <span class="tool-tag">BigQuery</span>
             <span class="tool-tag">SQL</span>
-            <span class="tool-tag">Data Analysis</span>
+            <span class="tool-tag">Prefect Cloud</span>
+            <span class="tool-tag">Looker Studio</span>
           </div>
           <div>
-            <div class="prob-lbl">Problem Solved</div>
-            <p class="proj-desc">An online retailer had scattered sales data with no clear view of which products performed best, which customers were most valuable, or where revenue was being lost. Built a complete analysis — uncovering trends, grouping customers by behavior, and delivering a KPI dashboard to track performance at a glance.</p>
+            <p class="proj-desc">Pulls product, user, and cart data from the Fake Store API using Python, loads it into Google BigQuery, runs SQL transformations to build analytics tables (top products, customer purchase summaries, cart revenue), and visualizes the results in a Looker Studio dashboard. Orchestrated with Prefect Cloud.</p>
           </div>
           <div class="proj-kpis">
-            <div class="pk"><div class="pk-v">Sales Trends</div><div class="pk-l">Tracked &amp; visualized</div></div>
-            <div class="pk"><div class="pk-v">Customer Groups</div><div class="pk-l">Segmented by behavior</div></div>
-            <div class="pk"><div class="pk-v">KPI Dashboard</div><div class="pk-l">Delivered to team</div></div>
+            <div class="pk"><div class="pk-v">API → BigQuery</div><div class="pk-l">Full ingestion pipeline</div></div>
+            <div class="pk"><div class="pk-v">SQL Transforms</div><div class="pk-l">Analytics-ready tables</div></div>
+            <div class="pk"><div class="pk-v">Looker Dashboard</div><div class="pk-l">Interactive visuals</div></div>
           </div>
           <div class="proj-ft">
             <a href="https://github.com/aseelDE/E-commerce-Data-Analytics" target="_blank" class="gh-btn">
@@ -1150,18 +1111,20 @@ section{padding:var(--py) 0}
           <div class="proj-meta">
             <span class="badge-done">● Completed</span>
             <span class="tool-tag">Python</span>
-            <span class="tool-tag">Automation</span>
-            <span class="tool-tag">Live Data Feed</span>
-            <span class="tool-tag">Scheduling</span>
+            <span class="tool-tag">BigQuery</span>
+            <span class="tool-tag">SQL</span>
+            <span class="tool-tag">Prefect</span>
+            <span class="tool-tag">Flask</span>
+            <span class="tool-tag">GitHub Actions</span>
+            <span class="tool-tag">Looker Studio</span>
           </div>
           <div>
-            <div class="prob-lbl">Problem Solved</div>
-            <p class="proj-desc">Manually downloading and updating weather data was slow and error-prone. Built a fully automated pipeline that connects to a live weather source, collects, cleans, and stores data in a structured format — ready for analysis without any human intervention.</p>
+            <p class="proj-desc">Collects live weather data from OpenWeatherMap across 11 cities every 10 minutes via GitHub Actions. Python + Prefect loads it into BigQuery, SQL transforms aggregate it into daily summaries, temperature rankings, and anomaly flags. Results are served through a Flask API and visualized in both a custom HTML dashboard and Looker Studio.</p>
           </div>
           <div class="proj-kpis">
-            <div class="pk"><div class="pk-v">Fully Automated</div><div class="pk-l">Zero manual steps</div></div>
-            <div class="pk"><div class="pk-v">Live Data</div><div class="pk-l">Always fresh</div></div>
-            <div class="pk"><div class="pk-v">Structured Output</div><div class="pk-l">Ready to analyze</div></div>
+            <div class="pk"><div class="pk-v">11 Cities</div><div class="pk-l">Global coverage</div></div>
+            <div class="pk"><div class="pk-v">Every 10 min</div><div class="pk-l">Auto-scheduled</div></div>
+            <div class="pk"><div class="pk-v">4 Analytics Tables</div><div class="pk-l">SQL-transformed</div></div>
           </div>
           <div class="proj-ft">
             <a href="https://github.com/aseelDE/weather-data-pipeline" target="_blank" class="gh-btn">
@@ -1178,7 +1141,7 @@ section{padding:var(--py) 0}
           <div class="pv-shine"></div>
           <div>
             <div class="pv-lbl">Project 03</div>
-            <div class="pv-title">Supermarket Sales &amp; Customer Report</div>
+            <div class="pv-title">Sales &amp; Customer Analytics — AdventureWorks</div>
           </div>
           <div class="pv-chart">
             <svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;opacity:.5">
@@ -1195,19 +1158,18 @@ section{padding:var(--py) 0}
         <div class="proj-body">
           <div class="proj-meta">
             <span class="badge-done">● Completed</span>
-            <span class="tool-tag">SQL</span>
-            <span class="tool-tag">Python</span>
+            <span class="tool-tag">SQL Server</span>
+            <span class="tool-tag">T-SQL</span>
             <span class="tool-tag">Power BI</span>
-            <span class="tool-tag">Excel</span>
+            <span class="tool-tag">DAX</span>
           </div>
           <div>
-            <div class="prob-lbl">Problem Solved</div>
-            <p class="proj-desc">A supermarket chain needed a clear picture of revenue, best-selling categories, and customer spending patterns. Analyzed the full dataset and produced a comprehensive report with charts and breakdowns that managers could immediately read and act on.</p>
+            <p class="proj-desc">BI solution built on the AdventureWorksDW2019 data warehouse. Uses T-SQL in SQL Server Management Studio to clean and transform data from a fact table + 6 dimension tables, then builds interactive Power BI dashboards with DAX to analyze $29M in sales across 18,480 customers from 2019–2021.</p>
           </div>
           <div class="proj-kpis">
-            <div class="pk"><div class="pk-v">Revenue</div><div class="pk-l">Fully analyzed</div></div>
-            <div class="pk"><div class="pk-v">Categories</div><div class="pk-l">Ranked &amp; compared</div></div>
-            <div class="pk"><div class="pk-v">Full Report</div><div class="pk-l">Delivered to mgmt</div></div>
+            <div class="pk"><div class="pk-v">$29M Sales</div><div class="pk-l">Analyzed</div></div>
+            <div class="pk"><div class="pk-v">18,480 Customers</div><div class="pk-l">Across 2019–2021</div></div>
+            <div class="pk"><div class="pk-v">Power BI Dashboard</div><div class="pk-l">With DAX metrics</div></div>
           </div>
           <div class="proj-ft">
             <a href="https://github.com/aseelDE/aseelDE-Sales-Customer-Analytics" target="_blank" class="gh-btn">
@@ -1460,6 +1422,7 @@ const revObs = new IntersectionObserver(entries => {
 }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
 
 document.querySelectorAll('.reveal').forEach(el => revObs.observe(el));
+
 </script>
 </body>
 </html>
