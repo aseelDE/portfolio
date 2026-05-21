@@ -650,6 +650,53 @@ section{padding:var(--py) 0}
 .c-card:hover .c-val{color:#fff}
 
 /* ============================================================
+   CV MODAL
+   ============================================================ */
+#cv-modal{
+  position:fixed;inset:0;z-index:1000;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(8px);
+  opacity:0;pointer-events:none;
+  transition:opacity .3s var(--ease);
+}
+#cv-modal.open{opacity:1;pointer-events:all}
+.cv-panel{
+  background:#1A1F2E;border:1px solid rgba(255,255,255,.1);
+  border-radius:16px;overflow:hidden;
+  width:min(860px,95vw);height:90vh;
+  display:flex;flex-direction:column;
+  box-shadow:0 32px 80px rgba(0,0,0,.6);
+  transform:translateY(20px) scale(.98);
+  transition:transform .35s var(--ease);
+}
+#cv-modal.open .cv-panel{transform:none}
+.cv-panel.maximized{width:100vw;height:100vh;border-radius:0;border:none}
+.cv-toolbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.65rem 1rem;
+  background:#111827;border-bottom:1px solid rgba(255,255,255,.07);
+  flex-shrink:0;
+}
+.cv-title{font-family:var(--f-hd);font-size:.82rem;font-weight:600;color:rgba(203,213,225,.8)}
+.cv-actions{display:flex;align-items:center;gap:.4rem}
+.cv-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:.75rem;font-weight:600;
+  padding:.38rem .85rem;border-radius:7px;
+  transition:all .15s;cursor:pointer;border:none;font-family:inherit;
+}
+.cv-btn-dl{background:var(--blue);color:#fff}
+.cv-btn-dl:hover{background:var(--blue-l)}
+.cv-btn-icon{
+  width:32px;height:32px;border-radius:7px;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);
+  color:rgba(203,213,225,.7);display:flex;align-items:center;justify-content:center;
+  transition:all .15s;cursor:pointer;
+}
+.cv-btn-icon:hover{background:rgba(255,255,255,.13);color:#fff}
+#cv-frame{flex:1;width:100%;border:none;background:#fff}
+
+/* ============================================================
    BACK TO TOP
    ============================================================ */
 #back-top{
@@ -797,7 +844,7 @@ section{padding:var(--py) 0}
       <div class="hero-btns">
         <a href="#projects" class="btn-p">View My Work ↓</a>
         <a href="#contact"  class="btn-g">Get in Touch</a>
-        <a href="Aseel Atiah Alzahrani CV.pdf" target="_blank" class="btn-g">View CV ↗</a>
+        <button class="btn-g" id="open-cv">View CV ↗</button>
       </div>
     </div>
 
@@ -1323,6 +1370,28 @@ section{padding:var(--py) 0}
   </div>
 </section>
 
+<!-- CV Modal -->
+<div id="cv-modal">
+  <div class="cv-panel" id="cv-panel">
+    <div class="cv-toolbar">
+      <span class="cv-title">Aseel Alzahrani — CV</span>
+      <div class="cv-actions">
+        <a href="Aseel Atiah Alzahrani CV.pdf" download class="cv-btn cv-btn-dl">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download
+        </a>
+        <button class="cv-btn-icon" id="cv-maximize" aria-label="Maximize">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+        </button>
+        <button class="cv-btn-icon" id="cv-close" aria-label="Close">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+    <iframe id="cv-frame" src="" title="CV"></iframe>
+  </div>
+</div>
+
 <!-- Back to top -->
 <button id="back-top" aria-label="Back to top">
   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
@@ -1421,6 +1490,39 @@ const revObs = new IntersectionObserver(entries => {
 }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
 
 document.querySelectorAll('.reveal').forEach(el => revObs.observe(el));
+
+/* ── CV Modal ───────────────────────────────────────────── */
+const cvModal    = document.getElementById('cv-modal');
+const cvPanel    = document.getElementById('cv-panel');
+const cvFrame    = document.getElementById('cv-frame');
+const cvClose    = document.getElementById('cv-close');
+const cvMaximize = document.getElementById('cv-maximize');
+const openCvBtn  = document.getElementById('open-cv');
+
+function openCV() {
+  cvFrame.src = 'Aseel Atiah Alzahrani CV.pdf';
+  cvModal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeCV() {
+  cvModal.classList.remove('open');
+  document.body.style.overflow = '';
+  setTimeout(() => { cvFrame.src = ''; }, 300);
+}
+
+openCvBtn.addEventListener('click', openCV);
+cvClose.addEventListener('click', closeCV);
+cvModal.addEventListener('click', e => { if (e.target === cvModal) closeCV(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCV(); });
+
+let maximized = false;
+cvMaximize.addEventListener('click', () => {
+  maximized = !maximized;
+  cvPanel.classList.toggle('maximized', maximized);
+  cvMaximize.innerHTML = maximized
+    ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="3" y2="21"/><line x1="21" y1="3" x2="14" y2="10"/></svg>'
+    : '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>';
+});
 
 </script>
 </body>
